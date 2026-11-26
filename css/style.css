@@ -397,8 +397,62 @@ section{ padding:64px 0; }
   border-radius:var(--radius); box-shadow:var(--shadow-sm);
 }
 .admin-table{ width:100%; border-collapse:collapse; background:#fffdf8; border-radius:var(--radius); overflow:hidden; min-width:620px; }
-.admin-table th, .admin-table td{ padding:13px 16px; text-align:left; font-size:.88rem; border-bottom:1px solid var(--paper-dim); white-space:nowrap; }
-.admin-table th{ background:var(--paper-dim); font-weight:700; text-transform:uppercase; font-size:.72rem; letter-spacing:.05em; }
+.admin-table th, .admin-table td{ padding:13px 16px; text-align:left; font-size:.88rem; border-bottom:1px solid var(--paper-dim); white-space:nowrap; vertical-align:top; }
+.admin-table th{ background:var(--paper-dim); font-weight:700; text-transform:uppercase; font-size:.72rem; letter-spacing:.05em; vertical-align:middle; }
+
+/* Admin Orders - Multi-item list and chips */
+.admin-table td.order-items-cell,
+.order-items-cell {
+  white-space: normal !important;
+  min-width: 250px;
+  max-width: 360px;
+  vertical-align: top;
+}
+.order-items-list {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  max-height: 220px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+.order-items-list::-webkit-scrollbar {
+  width: 4px;
+}
+.order-items-list::-webkit-scrollbar-thumb {
+  background: var(--paper-dim);
+  border-radius: 4px;
+}
+.order-item-chip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: .81rem;
+  line-height: 1.35;
+  background: rgba(0, 0, 0, 0.025);
+  border: 1px solid rgba(0, 0, 0, 0.07);
+  padding: 4px 9px;
+  border-radius: 6px;
+  box-sizing: border-box;
+}
+.order-item-title {
+  color: var(--ink);
+  font-weight: 500;
+  word-break: break-word;
+  white-space: normal;
+}
+.order-item-qty {
+  flex-shrink: 0;
+  font-weight: 700;
+  font-size: .74rem;
+  color: var(--wine);
+  background: #fdf2e9;
+  border: 1px solid rgba(139, 26, 43, 0.15);
+  padding: 1px 7px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
 .status-pill{ padding:4px 11px; border-radius:999px; font-size:.72rem; font-weight:700; text-transform:capitalize; }
 .status-pending{ background:#f0e0b8; color:#7a5b12; }
 .status-processing{ background:#cfe0f5; color:#1d4f8c; }
@@ -606,6 +660,22 @@ section{ padding:64px 0; }
   background: #15120e;
   border: 1px solid rgba(255, 255, 255, 0.08);
   box-shadow: 0 8px 28px rgba(0,0,0,.6);
+}
+
+[data-theme="dark"] .order-items-cell .order-item-chip {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.09);
+}
+[data-theme="dark"] .order-items-cell .order-item-title {
+  color: #ede7dd;
+}
+[data-theme="dark"] .order-items-cell .order-item-qty {
+  color: #f7d788;
+  background: rgba(229, 193, 88, 0.12);
+  border-color: rgba(229, 193, 88, 0.3);
+}
+[data-theme="dark"] .order-items-list::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
 }
 
 [data-theme="dark"] .box,

@@ -84,28 +84,51 @@ require_once 'includes/admin_header.php';
 
 <div class="table-responsive">
   <table class="admin-table">
-  <thead><tr><th>#</th><th>Customer</th><th>Items</th><th>Total</th><th>Placed</th><th>Status</th><th>Actions</th></tr></thead>
+  <thead>
+    <tr>
+      <th style="width:50px;">#</th>
+      <th style="min-width:160px;">Customer</th>
+      <th style="min-width:250px;">Items</th>
+      <th style="white-space:nowrap;">Total</th>
+      <th style="white-space:nowrap;">Placed</th>
+      <th style="white-space:nowrap;">Status</th>
+      <th style="white-space:nowrap; text-align:center;">Actions</th>
+    </tr>
+  </thead>
   <tbody>
     <?php foreach ($orders as $o):
       $items_stmt->execute([$o['id']]);
       $order_items = $items_stmt->fetchAll();
     ?>
       <tr>
-        <td>#<?= $o['id']; ?></td>
-        <td>
-          <?= h($o['full_name']); ?><br>
-          <span class="stock-badge"><?= h($o['email']); ?></span>
+        <td style="font-weight:700; color:var(--wine);">#<?= $o['id']; ?></td>
+        <td style="white-space:normal; min-width:160px;">
+          <strong><?= h($o['full_name']); ?></strong><br>
+          <span class="stock-badge" style="font-size:.76rem;"><?= h($o['email']); ?></span>
           <?php if (!empty($o['replacement_reason'])): ?>
             <div style="font-size:.72rem; color:#b45309; background:#fffbeb; border:1px solid #fde68a; padding:3px 6px; border-radius:4px; margin-top:4px;" title="<?= h($o['replacement_notes'] ?? ''); ?>">
               <i class="fas fa-rotate"></i> <strong>Replacement:</strong> <?= h($o['replacement_reason']); ?>
             </div>
           <?php endif; ?>
         </td>
-        <td style="max-width:220px; font-size:.8rem;"><?= implode(', ', array_map(fn($i) => h($i['title']) . ' ×' . $i['quantity'], $order_items)); ?></td>
-        <td><?= price($o['total_price']); ?></td>
-        <td><?= date('d M Y', strtotime($o['placed_on'])); ?></td>
-        <td>
-          <form method="post" style="display:flex; gap:6px;">
+        <td class="order-items-cell">
+          <?php if (!empty($order_items)): ?>
+            <div class="order-items-list">
+              <?php foreach ($order_items as $item): ?>
+                <div class="order-item-chip" title="<?= h($item['title']); ?> ×<?= (int)$item['quantity']; ?>">
+                  <span class="order-item-title"><?= h($item['title']); ?></span>
+                  <span class="order-item-qty">×<?= (int)$item['quantity']; ?></span>
+                </div>
+              <?php endforeach; ?>
+            </div>
+          <?php else: ?>
+            <span style="color:#999; font-style:italic;">No items</span>
+          <?php endif; ?>
+        </td>
+        <td style="font-weight:600; white-space:nowrap;"><?= price($o['total_price']); ?></td>
+        <td style="white-space:nowrap; color:#6b6259; font-size:.82rem;"><?= date('d M Y', strtotime($o['placed_on'])); ?></td>
+        <td style="white-space:nowrap;">
+          <form method="post" style="display:flex; gap:6px; margin:0;">
             <input type="hidden" name="csrf" value="<?= csrf_token(); ?>">
             <input type="hidden" name="order_id" value="<?= $o['id']; ?>">
             <select name="status" onchange="this.form.submit()" class="status-pill status-<?= $o['status']; ?>" style="border:none; cursor:pointer;">
@@ -116,7 +139,7 @@ require_once 'includes/admin_header.php';
             <input type="hidden" name="update_status" value="1">
           </form>
         </td>
-        <td>
+        <td style="white-space:nowrap; text-align:center;">
           <a href="../invoice.php?id=<?= $o['id']; ?>" class="btn btn-outline btn-sm" title="View / Print Invoice">
             <i class="fas fa-file-invoice"></i> Invoice
           </a>
