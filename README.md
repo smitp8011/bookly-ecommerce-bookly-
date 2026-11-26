@@ -1,4 +1,4 @@
-# 📚 Bookly — AI-Powered Boutique E-Commerce Platform
+# 📚 BookNest — Book Ordering and Delivery System
 
 [![PHP Version](https://img.shields.io/badge/PHP-8.x-777BB4?style=flat&logo=php&logoColor=white)](https://www.php.net/)
 [![MySQL](https://img.shields.io/badge/MySQL-8.0-4479A1?style=flat&logo=mysql&logoColor=white)](https://www.mysql.com/)
@@ -6,7 +6,7 @@
 [![JavaScript](https://img.shields.io/badge/JavaScript-ES6%2B%20AJAX-F7DF1E?style=flat&logo=javascript&logoColor=black)](https://developer.mozilla.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-> **Bookly** is an end-to-end boutique online bookstore platform engineered with pure PHP and MySQL, designed with an emphasis on **system security**, **ACID-compliant transaction processing**, and **intelligent AI assistance via Google Gemini API**.
+> **BookNest** is a comprehensive, production-grade Book Ordering and Delivery System engineered with PHP and MySQL, designed with an emphasis on **system security**, **ACID-compliant transaction processing**, and **intelligent AI customer assistance via Google Gemini API**.
 
 ---
 
@@ -82,16 +82,15 @@ The schema is normalized to 3rd Normal Form (3NF) to maintain referential integr
 
 ### Steps
 
-1. **Clone the repository into your XAMPP web root:**
+1. **Place the project inside your XAMPP web root:**
    ```bash
-   cd C:/xampp/htdocs/
-   git clone https://github.com/smitp8011/bookly-ecommerce-bookly-.git bookly
+   C:/xampp/htdocs/booknest
    ```
 
 2. **Import Database:**
    - Open **phpMyAdmin** (`http://localhost/phpmyadmin`).
-   - Create a new database named `bookly_db`.
-   - Import the database SQL dump file located in the project.
+   - Import the unified `schema.sql` file provided in the project root.
+   - It will automatically create and populate `bookly_db` with all required tables and catalog data.
 
 3. **Configure Database Connection:**
    - Review or update `config.php` if your local MySQL port/credentials differ:
@@ -99,14 +98,14 @@ The schema is normalized to 3rd Normal Form (3NF) to maintain referential integr
      define('DB_HOST', 'localhost');
      define('DB_NAME', 'bookly_db');
      define('DB_USER', 'root');
-     define('DB_PASS', ''); // Set your MySQL password
+     define('DB_PASS', ''); // Set your MySQL password (default is empty in standard XAMPP)
      ```
 
 4. **Launch the Application:**
    - Start Apache and MySQL modules in the XAMPP Control Panel.
    - Open your browser and navigate to:
      ```text
-     http://localhost/bookly/
+     http://localhost/booknest/
      ```
 
 ---

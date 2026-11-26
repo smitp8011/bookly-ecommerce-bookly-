@@ -20,7 +20,6 @@ document.addEventListener('DOMContentLoaded', () => {
   initCheckoutPaymentUI();
   initShopLiveFilter();
   initQuickView();
-  initAdminInlineEdit();
   initSampleReader();
   initCartDrawer();
   initPhotoLightbox();
@@ -882,64 +881,6 @@ function initQuickView() {
       console.error('Quick view error', err);
       modalBody.innerHTML = '<div style="padding:40px; text-align:center;">Failed to load book preview.</div>';
     }
-  });
-}
-
-/* ---------- Admin Inline Fast Price/Stock Editor ---------- */
-function initAdminInlineEdit() {
-  const inputs = document.querySelectorAll('.inline-editable');
-  if (!inputs.length) return;
-
-  inputs.forEach(input => {
-    let originalVal = input.value;
-
-    const saveChange = async () => {
-      const newVal = input.value.trim();
-      if (newVal === originalVal) return;
-
-      const bookId = input.dataset.id;
-      const field = input.dataset.field;
-      const csrf = getCsrf();
-
-      input.style.opacity = '0.5';
-
-      try {
-        const res = await fetch('../ajax/admin_quick_update.php', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-          body: `csrf=${encodeURIComponent(csrf)}&book_id=${encodeURIComponent(bookId)}&field=${encodeURIComponent(field)}&value=${encodeURIComponent(newVal)}`
-        });
-        const data = await res.json();
-        if (data.ok) {
-          originalVal = newVal;
-          input.style.borderColor = 'var(--sage)';
-          input.style.background = 'rgba(92,110,90,.15)';
-          setTimeout(() => {
-            input.style.borderColor = '';
-            input.style.background = '';
-          }, 1200);
-          showToast(`Book #${bookId} ${field} saved: ${newVal}`);
-        } else {
-          input.value = originalVal;
-          input.style.borderColor = 'var(--danger)';
-          showToast(data.message || 'Update failed', 'error');
-        }
-      } catch (err) {
-        console.error(err);
-        input.value = originalVal;
-        showToast('Network error', 'error');
-      } finally {
-        input.style.opacity = '1';
-      }
-    };
-
-    input.addEventListener('change', saveChange);
-    input.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') {
-        e.preventDefault();
-        input.blur();
-      }
-    });
   });
 }
 

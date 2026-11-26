@@ -172,7 +172,7 @@ function send_order_status_email(string $to_email, string $to_name, int $order_i
         </tr>
       </table>
       <div style="margin-top:24px; text-align:center;">
-        <a href="http://localhost/v3major1/orders.php" style="background:#6e1f2a; color:#e5c158; text-decoration:none; padding:10px 22px; border-radius:6px; font-size:14px; font-weight:bold; display:inline-block;">View in My Orders</a>
+        <a href="http://localhost/booknest/orders.php" style="background:#6e1f2a; color:#e5c158; text-decoration:none; padding:10px 22px; border-radius:6px; font-size:14px; font-weight:bold; display:inline-block;">View in My Orders</a>
       </div>
       <p style="color:#888888; font-size:12px; margin-top:24px; text-align:center;">You can track real-time delivery status or download your digital invoice anytime from your account dashboard.</p>
     ';
