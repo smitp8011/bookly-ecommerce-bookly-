@@ -88,7 +88,7 @@ require_once 'includes/admin_header.php';
             <?php endfor; ?>
           </span>
         </td>
-        <td style="max-width:300px; font-size:.88rem; line-height:1.4;">
+        <td class="cell-wrap" style="white-space:normal !important; min-width:240px; max-width:460px; word-break:break-word; font-size:.88rem; line-height:1.45;">
           <?= nl2br(h($rev['comment'])); ?>
         </td>
         <td style="font-size:.8rem; color:#888; white-space:nowrap;">

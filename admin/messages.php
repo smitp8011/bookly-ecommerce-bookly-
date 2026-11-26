@@ -22,23 +22,39 @@ require_once 'includes/admin_header.php';
 
 <div class="table-responsive">
   <table class="admin-table">
-  <thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Message</th><th>Received</th><th></th></tr></thead>
+  <thead>
+    <tr>
+      <th style="min-width:140px;">Name</th>
+      <th style="min-width:180px;">Email</th>
+      <th style="white-space:nowrap;">Phone</th>
+      <th style="min-width:280px; max-width:500px;">Message</th>
+      <th style="white-space:nowrap;">Received</th>
+      <th style="white-space:nowrap; text-align:center;">Action</th>
+    </tr>
+  </thead>
   <tbody>
     <?php foreach ($messages as $m): 
       $msgText = $m['message'];
       $topicBadge = '';
       if (preg_match('/^\[Topic:\s*([^\]]+)\]\s*(.*)$/s', $msgText, $topicMatch)) {
-          $topicBadge = '<span style="background:rgba(201,162,75,.18); color:var(--gold); padding:2px 8px; border-radius:10px; font-size:.72rem; font-weight:700; display:inline-block; margin-bottom:4px;">' . h($topicMatch[1]) . '</span><br>';
+          $topicBadge = '<span class="msg-topic-badge"><i class="fas fa-tag" style="font-size:.65rem;"></i> ' . h($topicMatch[1]) . '</span><br>';
           $msgText = $topicMatch[2];
       }
     ?>
       <tr>
-        <td><strong><?= h($m['name']); ?></strong></td>
-        <td><a href="mailto:<?= h($m['email']); ?>" style="color:var(--wine); font-weight:600;"><?= h($m['email']); ?></a></td>
-        <td><a href="tel:<?= h($m['phone']); ?>"><?= h($m['phone']); ?></a></td>
-        <td style="max-width:320px; line-height:1.4;"><?= $topicBadge; ?><?= nl2br(h($msgText)); ?></td>
-        <td><?= date('d M Y, h:i A', strtotime($m['created_at'])); ?></td>
-        <td><a href="messages.php?delete=<?= $m['id']; ?>&csrf=<?= csrf_token(); ?>" class="btn btn-danger btn-sm" onclick="return confirm('Delete this message?');"><i class="fas fa-trash"></i> Delete</a></td>
+        <td style="white-space:normal; min-width:140px;"><strong><?= h($m['name']); ?></strong></td>
+        <td style="white-space:normal; min-width:180px;"><a href="mailto:<?= h($m['email']); ?>" style="color:var(--wine); font-weight:600;"><?= h($m['email']); ?></a></td>
+        <td style="white-space:nowrap;"><a href="tel:<?= h($m['phone']); ?>" style="color:var(--ink);"><?= h($m['phone']); ?></a></td>
+        <td class="cell-wrap" style="white-space:normal !important; min-width:280px; max-width:500px; word-break:break-word;">
+          <?= $topicBadge; ?>
+          <div style="color:var(--ink); font-size:.86rem; line-height:1.45;"><?= nl2br(h($msgText)); ?></div>
+        </td>
+        <td style="white-space:nowrap; color:#6b6259; font-size:.82rem;"><?= date('d M Y, h:i A', strtotime($m['created_at'])); ?></td>
+        <td style="white-space:nowrap; text-align:center;">
+          <a href="messages.php?delete=<?= $m['id']; ?>&csrf=<?= csrf_token(); ?>" class="btn btn-danger btn-sm" onclick="return confirm('Delete this message?');">
+            <i class="fas fa-trash"></i> Delete
+          </a>
+        </td>
       </tr>
     <?php endforeach; ?>
     <?php if (empty($messages)): ?><tr><td colspan="6">No messages yet.</td></tr><?php endif; ?>
