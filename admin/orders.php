@@ -41,8 +41,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_status'])) {
                     }
                 }
 
-                $msg = 'Order #' . $order_id . ' updated to ' . ucfirst(str_replace('_', ' ', $status)) . '! ';
-                $msg .= '🔔 Automated alert simulated for ' . $order['full_name'] . ' (' . $order['email'] . ').';
+                // Send real email notification to customer
+                $mail_sent = false;
+                if (!empty($order['email'])) {
+                    $mail_sent = send_order_status_email($order['email'], $order['full_name'], $order_id, $status);
+                }
+
+                $status_clean = ucfirst(str_replace('_', ' ', $status));
+                $msg = 'Order #' . $order_id . ' updated to ' . $status_clean . '! ';
+                if ($mail_sent) {
+                    $msg .= '📧 Email alert sent to ' . h($order['email']) . '.';
+                } else {
+                    $msg .= '⚠️ (Email could not be delivered to ' . h($order['email']) . ').';
+                }
                 flash('success', $msg);
             }
         }

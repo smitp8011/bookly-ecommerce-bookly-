@@ -1,6 +1,7 @@
 <?php
 require_once 'config.php';
 require_once 'includes/functions.php';
+require_once 'includes/mailer.php';
 require_login();
 
 $user_id = $_SESSION['user_id'];
@@ -69,6 +70,12 @@ if (isset($_POST['cancel_order_id'])) {
                 // Update status
                 $pdo->prepare('UPDATE orders SET status = "cancelled" WHERE id = ?')->execute([$order_id]);
                 $pdo->commit();
+
+                // Send cancellation email
+                if (!empty($order['email'])) {
+                    send_order_status_email($order['email'], $order['full_name'], $order_id, 'cancelled');
+                }
+
                 flash('success', 'Order #' . $order_id . ' has been cancelled and stock has been restored.');
             } catch (Exception $e) {
                 $pdo->rollBack();
@@ -112,6 +119,10 @@ if (isset($_POST['request_replacement'])) {
                 } else {
                     $up = $pdo->prepare('UPDATE orders SET status = "replacement_requested", replacement_status = "requested", replacement_reason = ?, replacement_notes = ?, replacement_requested_on = NOW() WHERE id = ?');
                     $up->execute([$reason, $notes, $order_id]);
+
+                    if (!empty($order['email'])) {
+                        send_order_status_email($order['email'], $order['full_name'], $order_id, 'replacement_requested');
+                    }
 
                     flash('success', '🔄 Replacement request submitted for Order #' . $order_id . '! Our support team will verify and arrange your exchange copy.');
                 }

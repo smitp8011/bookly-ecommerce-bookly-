@@ -115,38 +115,66 @@ function send_otp_email(string $to_email, string $to_name, string $otp): bool {
 /** Send an order-status-update email. */
 function send_order_status_email(string $to_email, string $to_name, int $order_id, string $status): bool {
     $status_labels = [
-        'pending'    => 'Pending',
-        'processing' => 'Processing',
-        'shipped'    => 'Shipped',
-        'delivered'  => 'Delivered',
-        'cancelled'  => 'Cancelled',
+        'pending'              => 'Pending',
+        'processing'           => 'Processing',
+        'shipped'              => 'Shipped',
+        'delivered'            => 'Delivered',
+        'cancelled'            => 'Cancelled',
+        'replacement_requested'=> 'Replacement Requested',
+        'replacement_approved' => 'Replacement Approved',
+        'replaced'             => 'Replaced',
+        'replacement_rejected' => 'Replacement Declined',
     ];
     $status_messages = [
-        'pending'    => 'We have received your order and it is being prepared.',
-        'processing' => 'Your order is currently being processed.',
-        'shipped'    => 'Your order is on the way to your delivery address.',
-        'delivered'  => 'Your order has been delivered successfully. Thank you for shopping with us!',
-        'cancelled'  => 'Your order has been cancelled. Please contact support if you need assistance.',
+        'pending'              => 'We have received your order and it is being prepared.',
+        'processing'           => 'Your order is currently being packed and processed with care.',
+        'shipped'              => 'Great news! Your books are on their way to your delivery address.',
+        'delivered'            => 'Your order has been delivered successfully. Thank you for choosing BookNest!',
+        'cancelled'            => 'Your order has been cancelled. If you need any assistance, please contact support.',
+        'replacement_requested'=> 'We have received your replacement request and our concierge team is reviewing it.',
+        'replacement_approved' => 'Good news! Your replacement request has been approved and a fresh copy is being arranged.',
+        'replaced'             => 'Your replacement copy has been successfully delivered.',
+        'replacement_rejected' => 'Your replacement request could not be approved at this time. Please contact support for details.',
     ];
-    $label = $status_labels[$status] ?? ucfirst($status);
+    $label = $status_labels[$status] ?? ucfirst(str_replace('_', ' ', $status));
     $message = $status_messages[$status] ?? 'Your order status has been updated.';
 
+    // Status pill colors
+    $badge_color = '#e3cb8a';
+    $text_color = '#1c1815';
+    if ($status === 'delivered' || $status === 'replaced' || $status === 'replacement_approved') {
+        $badge_color = '#d1fae5';
+        $text_color = '#065f46';
+    } elseif ($status === 'shipped' || $status === 'processing') {
+        $badge_color = '#dbeafe';
+        $text_color = '#1e40af';
+    } elseif ($status === 'cancelled' || $status === 'replacement_rejected') {
+        $badge_color = '#fee2e2';
+        $text_color = '#991b1b';
+    } elseif ($status === 'replacement_requested') {
+        $badge_color = '#fef3c7';
+        $text_color = '#92400e';
+    }
+
     $body = '
-      <p>Hi ' . htmlspecialchars($to_name) . ',</p>
-      <p>' . htmlspecialchars($message) . '</p>
-      <table style="width:100%; margin:20px 0; border-collapse:collapse;">
-        <tr style="border-bottom:1px solid #eeeeee;">
-          <td style="padding:10px 0; color:#666666;">Order Number</td>
-          <td style="padding:10px 0; text-align:right; font-weight:bold; color:#1c1815;">#' . $order_id . '</td>
+      <p style="font-size:16px; margin-bottom:12px;">Hi <strong>' . htmlspecialchars($to_name) . '</strong>,</p>
+      <p style="font-size:15px; color:#444; line-height:1.6; margin-bottom:20px;">' . htmlspecialchars($message) . '</p>
+      <table style="width:100%; margin:20px 0; border-collapse:collapse; background:#faf8f5; border-radius:6px; border:1px solid #eee;">
+        <tr style="border-bottom:1px solid #eee;">
+          <td style="padding:12px 16px; color:#666666; font-size:14px;">Order Number</td>
+          <td style="padding:12px 16px; text-align:right; font-weight:bold; color:#1c1815; font-size:15px;">#' . $order_id . '</td>
         </tr>
         <tr>
-          <td style="padding:10px 0; color:#666666;">Current Status</td>
-          <td style="padding:10px 0; text-align:right;">
-            <span style="background-color:#e3cb8a; color:#1c1815; padding:5px 12px; border-radius:4px; font-size:13px; font-weight:bold;">' . htmlspecialchars($label) . '</span>
+          <td style="padding:12px 16px; color:#666666; font-size:14px;">Current Status</td>
+          <td style="padding:12px 16px; text-align:right;">
+            <span style="background-color:' . $badge_color . '; color:' . $text_color . '; padding:6px 14px; border-radius:14px; font-size:13px; font-weight:bold; display:inline-block;">' . htmlspecialchars($label) . '</span>
           </td>
         </tr>
       </table>
-      <p style="color:#666666; font-size:13px;">You can view full details in your account dashboard under "My Orders".</p>
+      <div style="margin-top:24px; text-align:center;">
+        <a href="http://localhost/v3major1/orders.php" style="background:#6e1f2a; color:#e5c158; text-decoration:none; padding:10px 22px; border-radius:6px; font-size:14px; font-weight:bold; display:inline-block;">View in My Orders</a>
+      </div>
+      <p style="color:#888888; font-size:12px; margin-top:24px; text-align:center;">You can track real-time delivery status or download your digital invoice anytime from your account dashboard.</p>
     ';
     
     // Clean subject line without special dash characters
