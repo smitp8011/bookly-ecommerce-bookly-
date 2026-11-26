@@ -24,12 +24,25 @@ $searchTerm = '%' . $query . '%';
 $stmt->execute([$searchTerm, $searchTerm, $searchTerm]);
 $books = $stmt->fetchAll();
 
+$is_fuzzy = false;
+$suggested_term = null;
+
+// If exact LIKE match finds no books, trigger fuzzy typo-tolerant matcher!
+if (empty($books)) {
+    $fuzzy_res = fuzzy_search_catalog($pdo, $query, 50);
+    if (!empty($fuzzy_res['matches'])) {
+        $books = array_slice($fuzzy_res['matches'], 0, 6);
+        $is_fuzzy = true;
+        $suggested_term = $fuzzy_res['suggested_term'];
+    }
+}
+
 $results = array_map(function ($b) {
     return [
         'id'            => $b['id'],
         'title'         => $b['title'],
         'author'        => $b['author'],
-        'category'      => $b['category_name'],
+        'category'      => $b['category_name'] ?? 'General',
         'price'         => price($b['price']),
         'cover'         => 'images/' . $b['cover_image'],
         'url'           => 'book.php?id=' . $b['id'],
@@ -38,8 +51,10 @@ $results = array_map(function ($b) {
 }, $books);
 
 echo json_encode([
-    'ok'      => true,
-    'query'   => $query,
-    'total'   => count($results),
-    'results' => $results
+    'ok'             => true,
+    'query'          => $query,
+    'is_fuzzy'       => $is_fuzzy,
+    'suggested_term' => $suggested_term,
+    'total'          => count($results),
+    'results'        => $results
 ]);

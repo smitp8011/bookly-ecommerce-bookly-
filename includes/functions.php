@@ -165,3 +165,104 @@ function validate_coupon($pdo, $code, $subtotal) {
 
     return ['ok' => true, 'coupon' => $coupon, 'discount' => $discount];
 }
+
+/**
+ * Typo-Tolerant & Fuzzy Book Search
+ * Detects typos, misspellings, phonetic similarities, and partial matches across titles & authors.
+ * Returns: ['matches' => array, 'suggested_term' => string|null]
+ */
+function fuzzy_search_catalog($pdo, $query, $threshold = 50) {
+    $q = trim($query);
+    if ($q === '') return ['matches' => [], 'suggested_term' => null];
+
+    $stmt = $pdo->query(
+        'SELECT b.*, c.name AS category_name 
+         FROM books b 
+         LEFT JOIN categories c ON c.id = b.category_id'
+    );
+    $all_books = $stmt->fetchAll();
+
+    $q_lower = strtolower($q);
+    $q_words = preg_split('/[\s,\-_]+/', $q_lower);
+    $q_words = array_filter($q_words, fn($w) => strlen($w) > 1);
+
+    $candidates = [];
+    $best_title_suggestion = null;
+    $highest_score = 0;
+
+    foreach ($all_books as $book) {
+        $title_lower  = strtolower($book['title']);
+        $author_lower = strtolower($book['author']);
+        $cat_lower    = strtolower($book['category_name'] ?? '');
+        $combined     = "$title_lower $author_lower $cat_lower";
+
+        $score = 0;
+
+        // 1. Direct whole-string similarity
+        similar_text($q_lower, $title_lower, $sim_title);
+        similar_text($q_lower, $author_lower, $sim_author);
+        $score = max($score, $sim_title, $sim_author);
+
+        // 2. Substring / contains
+        if (str_contains($title_lower, $q_lower)) {
+            $score = max($score, 90);
+        } elseif (str_contains($author_lower, $q_lower)) {
+            $score = max($score, 85);
+        }
+
+        // 3. Token-by-token comparison (Levenshtein, Metaphone, Soundex)
+        $target_words = preg_split('/[\s,\-_]+/', $combined);
+        foreach ($q_words as $qw) {
+            foreach ($target_words as $tw) {
+                if (strlen($tw) < 2) continue;
+
+                // Exact word match
+                if ($qw === $tw) {
+                    $score = max($score, 95);
+                    continue;
+                }
+
+                // Substring word match
+                if (str_contains($tw, $qw) || str_contains($qw, $tw)) {
+                    $score = max($score, 85);
+                }
+
+                // Word similarity percentage
+                similar_text($qw, $tw, $wpct);
+                $score = max($score, $wpct);
+
+                // Levenshtein distance (Typo detection, e.g. "daaknet" vs "darknet" = 1)
+                $lev = levenshtein($qw, $tw);
+                if ($lev <= 2 && strlen($qw) >= 4) {
+                    $lev_score = 90 - ($lev * 15);
+                    $score = max($score, $lev_score);
+                }
+
+                // Metaphone & Soundex (Phonetic spelling e.g. "alkemist" -> "alchemist")
+                if (metaphone($qw) === metaphone($tw)) {
+                    $score = max($score, 82);
+                } elseif (soundex($qw) === soundex($tw) && strlen($qw) >= 3) {
+                    $score = max($score, 72);
+                }
+            }
+        }
+
+        if ($score >= $threshold) {
+            $book['fuzzy_score'] = round($score);
+            $candidates[] = $book;
+
+            if ($score > $highest_score) {
+                $highest_score = $score;
+                $best_title_suggestion = $book['title'];
+            }
+        }
+    }
+
+    // Sort by highest match score first
+    usort($candidates, fn($a, $b) => $b['fuzzy_score'] <=> $a['fuzzy_score']);
+
+    return [
+        'matches'        => $candidates,
+        'suggested_term' => $best_title_suggestion
+    ];
+}

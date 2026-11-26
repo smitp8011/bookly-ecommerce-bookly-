@@ -347,13 +347,68 @@ function initRatingInput() {
   if (!wrap) return;
   const stars = wrap.querySelectorAll('i');
   const hidden = document.getElementById('rating-value');
+  const label = document.getElementById('rating-text');
+
+  const ratingDescriptions = {
+    1: '1 Star — Poor',
+    2: '2 Stars — Fair',
+    3: '3 Stars — Good',
+    4: '4 Stars — Very Good',
+    5: '5 Stars — Excellent!'
+  };
+
   stars.forEach(star => {
+    // Hover preview
+    star.addEventListener('mouseenter', () => {
+      const val = parseInt(star.dataset.val, 10);
+      stars.forEach(s => s.classList.toggle('hover', parseInt(s.dataset.val, 10) <= val));
+      if (label) {
+        label.textContent = ratingDescriptions[val] || '';
+      }
+    });
+
+    // Click select
     star.addEventListener('click', () => {
       const val = parseInt(star.dataset.val, 10);
-      hidden.value = val;
-      stars.forEach(s => s.classList.toggle('active', parseInt(s.dataset.val, 10) <= val));
+      if (hidden) hidden.value = val;
+      stars.forEach(s => {
+        s.classList.toggle('active', parseInt(s.dataset.val, 10) <= val);
+        s.classList.remove('hover');
+      });
+      if (label) {
+        label.textContent = ratingDescriptions[val] || '';
+        label.style.color = 'var(--gold)';
+        label.style.fontWeight = '700';
+      }
+      const card = document.querySelector('.star-rating-selector-card');
+      if (card) card.style.border = '1px solid rgba(201,162,75,.6)';
     });
   });
+
+  wrap.addEventListener('mouseleave', () => {
+    stars.forEach(s => s.classList.remove('hover'));
+    const currentVal = hidden ? parseInt(hidden.value, 10) : 0;
+    if (label) {
+      label.textContent = currentVal ? ratingDescriptions[currentVal] : '(Click to give star rating)';
+    }
+  });
+
+  // Client-side submit validation so user never wonders why rating wasn't given
+  const form = document.getElementById('review-submission-form');
+  if (form) {
+    form.addEventListener('submit', (e) => {
+      const currentVal = hidden ? parseInt(hidden.value, 10) : 0;
+      if (!currentVal || currentVal < 1) {
+        e.preventDefault();
+        const card = document.querySelector('.star-rating-selector-card');
+        if (card) {
+          card.style.border = '2px solid var(--danger)';
+          card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+        alert('Please click on the stars to select your rating (1 to 5 stars) before submitting.');
+      }
+    });
+  }
 }
 /* ---------- Dark mode toggle ---------- */
 function initThemeToggle() {
@@ -517,7 +572,13 @@ function initLiveSearch() {
         const res = await fetch(`ajax/search.php?q=${encodeURIComponent(q)}`);
         const data = await res.json();
         if (data.ok && data.results.length > 0) {
-          dropdown.innerHTML = data.results.map(b => `
+          const fuzzyBanner = data.is_fuzzy ? `
+            <div style="padding:7px 12px; background:rgba(201,162,75,0.15); font-size:.78rem; font-weight:700; color:var(--gold); border-bottom:1px solid rgba(201,162,75,0.25); display:flex; align-items:center; gap:6px;">
+              <i class="fas fa-wand-magic-sparkles"></i> Closest matches ${data.suggested_term ? `(Did you mean: <em>${data.suggested_term}</em>?)` : ''}
+            </div>
+          ` : '';
+
+          dropdown.innerHTML = fuzzyBanner + data.results.map(b => `
             <a href="${b.url}" class="search-item">
               <img src="${b.cover}" alt="${b.title}">
               <div class="search-item-info">
@@ -527,8 +588,8 @@ function initLiveSearch() {
               <div class="search-item-price">${b.price}</div>
             </a>
           `).join('') + `
-            <a href="shop.php?search=${encodeURIComponent(q)}" class="search-view-all">
-              View all results for "${q}" <i class="fas fa-arrow-right"></i>
+            <a href="shop.php?search=${encodeURIComponent(data.suggested_term || q)}" class="search-view-all">
+              View all results for "${data.suggested_term || q}" <i class="fas fa-arrow-right"></i>
             </a>
           `;
           dropdown.classList.add('show');

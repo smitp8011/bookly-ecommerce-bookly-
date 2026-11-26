@@ -358,16 +358,28 @@ require_once 'includes/header.php';
           </button>
         </div>
       <?php else: ?>
-        <form method="post" enctype="multipart/form-data" style="margin-bottom:36px; background:var(--paper-dim); padding:22px; border-radius:12px; border:1px solid rgba(201,162,75,.25); position:relative;">
-          <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:14px;">
+        <form method="post" enctype="multipart/form-data" id="review-submission-form" style="margin-bottom:36px; background:var(--paper-dim); padding:22px; border-radius:12px; border:1px solid rgba(201,162,75,.25); position:relative;">
+          <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:16px;">
             <h4 style="margin:0; font-size:1.05rem;"><i class="fas fa-pen-nib" style="color:var(--gold);"></i> Write a Review &amp; Add Photo</h4>
             <span class="badge-verified" style="font-size:.76rem; padding:3px 10px;"><i class="fas fa-circle-check"></i> Verified Buyer</span>
           </div>
           <input type="hidden" name="csrf" value="<?= csrf_token(); ?>">
-          <div class="rating-input" style="margin-bottom:12px;">
-            <?php for ($i = 1; $i <= 5; $i++): ?><i class="fas fa-star" data-val="<?= $i; ?>"></i><?php endfor; ?>
+          
+          <!-- Clearly Visible & Interactive Star Rating Selector Card -->
+          <div class="star-rating-selector-card" style="margin-bottom:16px;">
+            <label style="font-size:.88rem; font-weight:700; color:var(--ink); margin:0;">
+              Your Rating <span style="color:var(--danger);">*</span>:
+            </label>
+            <div class="rating-input" id="review-stars-wrap">
+              <?php for ($i = 1; $i <= 5; $i++): ?>
+                <i class="fas fa-star" data-val="<?= $i; ?>" title="Rate <?= $i; ?> out of 5 stars"></i>
+              <?php endfor; ?>
+            </div>
+            <span id="rating-text" style="font-size:.84rem; font-weight:600; color:var(--gold); min-width:140px;">
+              (Click to give star rating)
+            </span>
           </div>
-          <input type="hidden" name="rating" id="rating-value" value="0">
+          <input type="hidden" name="rating" id="rating-value" value="0" required>
           <textarea class="box" name="comment" rows="3" placeholder="Share your honest reading experience..." required></textarea>
           
           <div style="margin-bottom:16px;">

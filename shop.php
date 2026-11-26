@@ -57,6 +57,33 @@ $stmt->bindValue('offset', $offset, PDO::PARAM_INT);
 $stmt->execute();
 $books = $stmt->fetchAll();
 
+$is_fuzzy = false;
+$suggested_term = null;
+$fallback_popular = false;
+
+// If exact search yields 0 books, automatically trigger smart typo-tolerant fuzzy matching!
+if (empty($books) && $search !== '') {
+    $fuzzy_res = fuzzy_search_catalog($pdo, $search, 50);
+    if (!empty($fuzzy_res['matches'])) {
+        $books = $fuzzy_res['matches'];
+        $is_fuzzy = true;
+        $suggested_term = $fuzzy_res['suggested_term'];
+        $total_books = count($books);
+        $total_pages = 1;
+    } else {
+        // Fallback: If completely unrecognized typo/gibberish, show popular reader favorites
+        $pop_stmt = $pdo->query(
+            'SELECT b.*, c.name AS category_name FROM books b 
+             LEFT JOIN categories c ON c.id = b.category_id 
+             ORDER BY b.stock DESC LIMIT 4'
+        );
+        $books = $pop_stmt->fetchAll();
+        $fallback_popular = true;
+        $total_books = count($books);
+        $total_pages = 1;
+    }
+}
+
 $wishlisted_ids = [];
 if ($user_id) {
     $stmt2 = $pdo->prepare('SELECT book_id FROM wishlist WHERE user_id = ?');
@@ -71,9 +98,35 @@ function qs($overrides = []) {
     return htmlspecialchars('?' . http_build_query($params));
 }
 
-function render_shop_grid_html($books, $wishlisted_ids, $purchased_ids, $total_pages, $page) {
+function render_shop_grid_html($books, $wishlisted_ids, $purchased_ids, $total_pages, $page, $search = '', $is_fuzzy = false, $suggested_term = null, $fallback_popular = false) {
     ob_start();
-    if (empty($books)): ?>
+    if ($is_fuzzy): ?>
+      <div class="search-suggestion-notice" style="background:rgba(201,162,75,0.12); border:1.5px solid var(--gold); border-radius:10px; padding:12px 18px; margin-bottom:20px; display:flex; align-items:center; gap:12px;">
+        <i class="fas fa-wand-magic-sparkles" style="color:var(--gold); font-size:1.3rem;"></i>
+        <div>
+          <div style="font-weight:700; color:var(--ink); font-size:.92rem;">
+            No exact matches found for &ldquo;<?= h($search); ?>&rdquo;
+          </div>
+          <div style="font-size:.84rem; color:var(--muted); margin-top:2px;">
+            Showing closest related books<?= $suggested_term ? ' — Did you mean: <a href="shop.php?search=' . urlencode($suggested_term) . '" style="color:var(--wine); font-weight:700; text-decoration:underline;">' . h($suggested_term) . '</a>?' : ''; ?>
+          </div>
+        </div>
+      </div>
+    <?php elseif ($fallback_popular): ?>
+      <div class="search-suggestion-notice" style="background:var(--paper-dim); border:1px solid rgba(201,162,75,0.3); border-radius:10px; padding:12px 18px; margin-bottom:20px; display:flex; align-items:center; gap:12px;">
+        <i class="fas fa-compass" style="color:var(--gold); font-size:1.3rem;"></i>
+        <div>
+          <div style="font-weight:700; color:var(--ink); font-size:.92rem;">
+            No books found matching &ldquo;<?= h($search); ?>&rdquo;
+          </div>
+          <div style="font-size:.84rem; color:var(--muted); margin-top:2px;">
+            Here are popular reader favorites you might enjoy exploring:
+          </div>
+        </div>
+      </div>
+    <?php endif; ?>
+
+    <?php if (empty($books)): ?>
       <div class="empty-state">
         <i class="fas fa-book-open"></i>
         <h3>No books match those filters</h3>
@@ -131,7 +184,7 @@ if (isset($_GET['ajax']) && $_GET['ajax'] == '1') {
         'ok'          => true,
         'total_books' => $total_books,
         'count_text'  => $total_books . ' book' . ($total_books === 1 ? '' : 's') . ' found',
-        'html'        => render_shop_grid_html($books, $wishlisted_ids, $purchased_ids, $total_pages, $page)
+        'html'        => render_shop_grid_html($books, $wishlisted_ids, $purchased_ids, $total_pages, $page, $search, $is_fuzzy, $suggested_term, $fallback_popular)
     ]);
     exit;
 }
@@ -195,7 +248,7 @@ require_once 'includes/header.php';
         </div>
 
         <div id="shop-grid-container">
-          <?= render_shop_grid_html($books, $wishlisted_ids, $purchased_ids, $total_pages, $page); ?>
+          <?= render_shop_grid_html($books, $wishlisted_ids, $purchased_ids, $total_pages, $page, $search, $is_fuzzy, $suggested_term, $fallback_popular); ?>
         </div>
       </div>
     </div>
