@@ -91,8 +91,8 @@ require_once 'includes/admin_header.php';
         <td style="max-width:300px; font-size:.88rem; line-height:1.4;">
           <?= nl2br(h($rev['comment'])); ?>
         </td>
-        <td style="font-size:.8rem; color:#888;">
-          <?= date('d M Y', strtotime($rev['created_at'])); ?>
+        <td style="font-size:.8rem; color:#888; white-space:nowrap;">
+          <?= date('d M Y, h:i A', strtotime($rev['created_at'])); ?>
         </td>
         <td>
           <a href="reviews.php?delete=<?= $rev['id']; ?>&csrf=<?= csrf_token(); ?>" 

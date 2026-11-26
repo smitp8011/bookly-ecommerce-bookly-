@@ -14,6 +14,14 @@ if (!$book) {
     die('Book not found.');
 }
 
+// Auto-migrate: allow multiple reviews per user per book
+try {
+    $idx_check = $pdo->query("SHOW INDEX FROM reviews WHERE Key_name = 'one_review_per_user_per_book'")->fetch();
+    if ($idx_check) {
+        $pdo->exec("ALTER TABLE reviews DROP INDEX one_review_per_user_per_book");
+    }
+} catch (Exception $ignored) {}
+
 // Handle review submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_review'])) {
     if (!is_logged_in()) {
@@ -48,16 +56,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_review'])) {
                 }
             }
 
+            // Insert new review record (allows multiple reviews per user per book)
             if ($review_image) {
                 $stmt = $pdo->prepare(
-                    'INSERT INTO reviews (book_id, user_id, rating, comment, review_image) VALUES (?, ?, ?, ?, ?)
-                     ON DUPLICATE KEY UPDATE rating = VALUES(rating), comment = VALUES(comment), review_image = VALUES(review_image)'
+                    'INSERT INTO reviews (book_id, user_id, rating, comment, review_image) VALUES (?, ?, ?, ?, ?)'
                 );
                 $stmt->execute([$book_id, $user_id, $rating, $comment, $review_image]);
             } else {
                 $stmt = $pdo->prepare(
-                    'INSERT INTO reviews (book_id, user_id, rating, comment) VALUES (?, ?, ?, ?)
-                     ON DUPLICATE KEY UPDATE rating = VALUES(rating), comment = VALUES(comment)'
+                    'INSERT INTO reviews (book_id, user_id, rating, comment) VALUES (?, ?, ?, ?)'
                 );
                 $stmt->execute([$book_id, $user_id, $rating, $comment]);
             }
@@ -399,11 +406,14 @@ require_once 'includes/header.php';
         $is_verified = in_array($rev['user_id'], $verified_buyer_ids);
       ?>
         <div class="review">
-          <div style="display:flex; align-items:center;">
+          <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
             <span class="rname"><?= h($rev['user_name']); ?></span>
             <?php if ($is_verified): ?>
               <span class="badge-verified"><i class="fas fa-circle-check"></i> Verified Buyer</span>
             <?php endif; ?>
+            <span style="margin-left:auto; font-size:.76rem; color:var(--muted); font-weight:500;">
+              <i class="far fa-clock" style="font-size:.72rem;"></i> <?= date('d M Y, h:i A', strtotime($rev['created_at'])); ?>
+            </span>
           </div>
           <div class="stars"><?php for ($i = 1; $i <= 5; $i++) echo '<i class="fas fa-star" style="' . ($i <= $rev['rating'] ? '' : 'color:var(--paper-dim);') . '"></i>'; ?></div>
           <p><?= nl2br(h($rev['comment'])); ?></p>

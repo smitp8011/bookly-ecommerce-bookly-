@@ -59,7 +59,7 @@ CREATE TABLE `reviews` (
   `comment` VARCHAR(1000) NOT NULL,
   `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `one_review_per_user_per_book` (`book_id`,`user_id`),
+  KEY `idx_reviews_book_user` (`book_id`,`user_id`),
   KEY `user_id` (`user_id`),
   CONSTRAINT `fk_reviews_book` FOREIGN KEY (`book_id`) REFERENCES `books`(`id`) ON DELETE CASCADE,
   CONSTRAINT `fk_reviews_user` FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE,
