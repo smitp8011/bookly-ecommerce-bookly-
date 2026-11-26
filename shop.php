@@ -12,7 +12,7 @@ $cat_ids     = array_filter(array_map('intval', $cat_ids));
 $max_price   = isset($_GET['max_price']) ? (int) $_GET['max_price'] : 700;
 $sort        = $_GET['sort'] ?? 'newest';
 $page        = max(1, (int) ($_GET['page'] ?? 1));
-$per_page    = 8;
+$per_page    = 9;
 
 $where = ['price <= :max_price'];
 $params = ['max_price' => $max_price];
