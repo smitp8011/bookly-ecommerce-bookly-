@@ -97,7 +97,7 @@ require_once 'includes/admin_header.php';
 
   <label>Category</label>
   <select name="category_id" required>
-    <option value="">Select a genre</option>
+    <option value="">Select a category</option>
     <?php foreach ($categories as $cat): ?>
       <option value="<?= $cat['id']; ?>" <?= $book['category_id'] == $cat['id'] ? 'selected' : ''; ?>><?= h($cat['name']); ?></option>
     <?php endforeach; ?>

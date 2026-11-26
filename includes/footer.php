@@ -190,7 +190,7 @@
   </div>
 
   <form id="ai-chat-form" class="ai-chat-input-bar">
-    <input type="text" id="ai-user-input" placeholder="Ask about books, genre, orders, discounts..." autocomplete="off" required>
+    <input type="text" id="ai-user-input" placeholder="Ask about books, categories, orders, discounts..." autocomplete="off" required>
     <button type="submit" id="ai-send-btn" title="Send message"><i class="fas fa-paper-plane"></i></button>
   </form>
 </div>

@@ -104,7 +104,7 @@ if (!empty(GEMINI_API_KEY) && GEMINI_API_KEY !== 'YOUR_GEMINI_API_KEY_HERE') {
 
         $catalog_summary = [];
         foreach ($catalog as $b) {
-            $catalog_summary[] = "ID: {$b['id']} | Title: \"{$b['title']}\" by {$b['author']} | Genre: {$b['category_name']} | Price: " . price($b['price']) . " | Synopsis: " . substr(strip_tags($b['description']), 0, 120);
+            $catalog_summary[] = "ID: {$b['id']} | Title: \"{$b['title']}\" by {$b['author']} | Category: {$b['category_name']} | Price: " . price($b['price']) . " | Synopsis: " . substr(strip_tags($b['description']), 0, 120);
         }
 
         $coupons_summary = [];

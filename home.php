@@ -115,7 +115,7 @@ $displayOrdersCount = max(120, $ordersCount);
     
     <div>
       <div class="counter" data-target="6">0</div>
-      <div class="label">Curated genres</div>
+      <div class="label">Curated categories</div>
     </div>
     
     <div>
@@ -133,7 +133,7 @@ $displayOrdersCount = max(120, $ordersCount);
 <section>
   <div class="container">
     <div class="section-head reveal">
-      <div><span class="eyebrow">Explore</span><h2>Shop by genre</h2></div>
+      <div><span class="eyebrow">Explore</span><h2>Shop by category</h2></div>
     </div>
     <div class="book-grid" style="grid-template-columns:repeat(auto-fill,minmax(160px,1fr));">
       <?php foreach ($categories as $cat): ?>

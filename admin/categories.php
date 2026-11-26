@@ -84,7 +84,7 @@ require_once 'includes/admin_header.php';
 ?>
 
 <div class="section-head">
-  <div><span class="eyebrow">Inventory Organization</span><h2>Manage Categories & Genres</h2></div>
+  <div><span class="eyebrow">Inventory Organization</span><h2>Manage Categories</h2></div>
 </div>
 
 <?php foreach ($errors as $err): ?>
@@ -103,7 +103,7 @@ require_once 'includes/admin_header.php';
       <input type="hidden" name="csrf" value="<?= csrf_token(); ?>">
       <input type="hidden" name="category_id" value="<?= $edit_category['id'] ?? 0; ?>">
 
-      <label for="cat-name">Category / Genre Name *</label>
+      <label for="cat-name">Category Name *</label>
       <input type="text" id="cat-name" name="name" required value="<?= h($edit_category['name'] ?? ''); ?>" placeholder="e.g. Science Fiction, Romance, History" autofocus>
 
       <div style="display:flex; gap:10px; margin-top:8px;">

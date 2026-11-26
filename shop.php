@@ -214,7 +214,7 @@ require_once 'includes/header.php';
           <input type="hidden" name="search" id="filter-search-val" value="<?= h($search); ?>">
           <input type="hidden" name="sort" id="filter-sort-val" value="<?= h($sort); ?>">
 
-          <h4>Genre</h4>
+          <h4>Category</h4>
           <div class="filter-group">
             <?php foreach ($categories as $cat): ?>
               <label>

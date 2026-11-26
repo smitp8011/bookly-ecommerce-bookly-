@@ -130,10 +130,10 @@ require_once 'includes/admin_header.php';
   </div>
 
   <div class="report-section">
-    <h4>Revenue by genre</h4>
+    <h4>Revenue by category</h4>
     <div class="table-responsive">
   <table class="admin-table">
-      <thead><tr><th>Genre</th><th>Units</th><th>Revenue</th></tr></thead>
+      <thead><tr><th>Category</th><th>Units</th><th>Revenue</th></tr></thead>
       <tbody>
         <?php foreach ($cat_rows as $c): ?>
           <tr><td><?= h($c['name']); ?></td><td><?= (int) $c['units']; ?></td><td><?= price($c['revenue']); ?></td></tr>
