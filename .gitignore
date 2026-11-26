@@ -20,3 +20,7 @@ $RECYCLE.BIN/
 # Scratch / temp files
 scratch/
 *.log
+
+# Local secrets & credentials
+config.local.php
+.env

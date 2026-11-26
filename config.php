@@ -25,10 +25,14 @@ try {
 
 /**
  * AI Assistant Configuration
- * Get a free Gemini API Key at https://aistudio.google.com (optional)
- * Get a Grok API Key at https://console.x.ai (optional)
+ * Get a free Gemini API Key at https://aistudio.google.com
  */
-define('GEMINI_API_KEY', getenv('GEMINI_API_KEY') ?: 'YOUR_GEMINI_API_KEY_HERE');
+if (file_exists(__DIR__ . '/config.local.php')) {
+    require_once __DIR__ . '/config.local.php';
+}
+if (!defined('GEMINI_API_KEY')) {
+    define('GEMINI_API_KEY', getenv('GEMINI_API_KEY') ?: 'YOUR_GEMINI_API_KEY_HERE');
+}
 define('GROK_API_KEY', getenv('GROK_API_KEY') ?: '');
 define('AI_PROVIDER', 'gemini');
 

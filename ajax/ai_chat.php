@@ -100,7 +100,7 @@ if (preg_match('/(?:order|tracking|track|status|kaha he|kahan hai|kab aayega)\s*
 // -------------------------------------------------------------
 if (!empty(GEMINI_API_KEY) && GEMINI_API_KEY !== 'YOUR_GEMINI_API_KEY_HERE') {
     try {
-        $gemini_url = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=' . GEMINI_API_KEY;
+        $gemini_url = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:generateContent?key=' . GEMINI_API_KEY;
 
         $catalog_summary = [];
         foreach ($catalog as $b) {
@@ -119,7 +119,7 @@ if (!empty(GEMINI_API_KEY) && GEMINI_API_KEY !== 'YOUR_GEMINI_API_KEY_HERE') {
                                "STORE POLICIES:\n" .
                                "- Standard Delivery: 2-4 business days across India. FREE shipping on orders above ₹499.\n" .
                                "- Returns: 7-day hassle-free replacement.\n" .
-                               "- Payment: UPI (GPay, PhonePe), Cards, Net Banking, COD.\n" .
+                               "- Payment: Cash on Delivery (COD).\n" .
                                "- Guest Browsing: Supported (browse & add to cart without login; login needed at checkout).\n\n" .
                                "INSTRUCTIONS:\n" .
                                "1. You are a real Generative AI. Understand and answer ANY question naturally (philosophies, book summaries, jokes, reading tips, casual chit-chat, advice, etc.).\n" .
