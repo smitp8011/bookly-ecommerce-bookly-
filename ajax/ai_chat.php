@@ -98,9 +98,9 @@ if (preg_match('/(?:order|tracking|track|status|kaha he|kahan hai|kab aayega)\s*
 // -------------------------------------------------------------
 // 2. PRIMARY GENERATIVE LLM: GOOGLE GEMINI REAL AI
 // -------------------------------------------------------------
-if (!empty(GEMINI_API_KEY)) {
+if (!empty(GEMINI_API_KEY) && GEMINI_API_KEY !== 'YOUR_GEMINI_API_KEY_HERE') {
     try {
-        $gemini_url = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key=' . GEMINI_API_KEY;
+        $gemini_url = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=' . GEMINI_API_KEY;
 
         $catalog_summary = [];
         foreach ($catalog as $b) {
