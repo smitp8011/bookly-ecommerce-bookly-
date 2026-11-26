@@ -85,50 +85,6 @@ require_once 'includes/header.php';
     </div>
   </div>
 </section>
-<?php if (false): // Yahan se disable shuru ?>
-<!-- <div class="container">
-  <div class="stats-strip">
-    <div><div class="counter" data-target="<?= count($pdo->query('SELECT id FROM books')->fetchAll()); ?>">0</div><div class="label">Titles in stock</div></div>
-    <div><div class="counter" data-target="6">0</div><div class="label">Curated genres</div></div>
-    <div><div class="counter" data-target="<?= max(120, count($pdo->query('SELECT id FROM orders')->fetchAll())); ?>">0</div><div class="label">Orders delivered</div></div>
-    <div><div class="counter" data-target="98">0</div><div class="label">% happy readers</div></div>
-  </div>
-</div> -->
-<?php endif; // Yahan par disable khatam ?>
-<?php
-// 1. DATA FETCHING
-// fetchColumn() seedha total count ka number return karta hai
-$booksCount = (int) $pdo->query('SELECT COUNT(*) FROM books')->fetchColumn();
-$ordersCount = (int) $pdo->query('SELECT COUNT(*) FROM orders')->fetchColumn();
-
-// Order wali minimum 120 ki condition yahan lagayein
-$displayOrdersCount = max(120, $ordersCount);
-?>
-
-<!-- 2. DISPLAY (HTML Logic jismein sirf variables print kiye hain) -->
-<div class="container">
-  <div class="stats-strip">
-    <div>
-      <div class="counter" data-target="<?= $booksCount; ?>">0</div>
-      <div class="label">Titles in stock</div>
-    </div>
-    
-    <div>
-      <div class="counter" data-target="6">0</div>
-      <div class="label">Curated categories</div>
-    </div>
-    
-    <div>
-      <div class="counter" data-target="<?= $displayOrdersCount; ?>">0</div>
-      <div class="label">Orders delivered</div>
-    </div>
-    
-    <div>
-      <div class="counter" data-target="98">0</div>
-      <div class="label">% happy readers</div>
-    </div>
-  </div>
-</div>
 
 <section>
   <div class="container">
