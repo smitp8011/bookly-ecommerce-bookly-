@@ -190,7 +190,7 @@ require_once 'includes/header.php';
       <div class="reveal in" style="background:#faf5eb; padding:24px; border-radius:14px; border-top:4px solid var(--gold); position:relative;">
         <div style="font-family:var(--font-display); font-size:1.8rem; font-weight:700; color:var(--wine); margin-bottom:6px;">2026</div>
         <h4 style="font-size:1.05rem; margin-bottom:8px;">Interactive Reader Guild</h4>
-        <p style="font-size:.84rem; line-height:1.6; color:#6b6259; margin:0;">Launched Sample Chapter Readers, 7-Day Replacement Guarantee & Instant Razorpay checkout.</p>
+        <p style="font-size:.84rem; line-height:1.6; color:#6b6259; margin:0;">Launched Sample Chapter Readers, 7-Day Replacement Guarantee & Doorstep Cash on Delivery.</p>
       </div>
     </div>
   </div>

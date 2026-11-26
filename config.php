@@ -32,10 +32,4 @@ define('GEMINI_API_KEY', getenv('GEMINI_API_KEY') ?: 'YOUR_GEMINI_API_KEY_HERE')
 define('GROK_API_KEY', getenv('GROK_API_KEY') ?: '');
 define('AI_PROVIDER', 'gemini');
 
-/**
- * Razorpay Payment Gateway Configuration (Test Mode Sandbox)
- */
-define('RAZORPAY_KEY_ID', getenv('RAZORPAY_KEY_ID') ?: 'rzp_test_YOUR_KEY_ID');
-define('RAZORPAY_KEY_SECRET', getenv('RAZORPAY_KEY_SECRET') ?: 'YOUR_KEY_SECRET');
-
 

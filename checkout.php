@@ -61,7 +61,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $phone     = trim($_POST['phone'] ?? '');
         $email     = trim($_POST['email'] ?? '');
         $address   = trim($_POST['address'] ?? '');
-        $raw_method = $_POST['payment_method'] ?? 'UPI';
+        $raw_method = $_POST['payment_method'] ?? 'Cash on Delivery';
 
         if ($full_name === '' || $phone === '' || $email === '' || $address === '') {
             $errors[] = 'All fields are required.';
@@ -83,52 +83,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 $payment_id = null;
                 $order_status = 'pending';
-                $final_method = $raw_method;
-
-                // 1. UPI / QR Payment
-                if ($raw_method === 'UPI' || $raw_method === 'Instant UPI / QR') {
-                    $payment_id = 'pay_upi_' . strtoupper(bin2hex(random_bytes(5)));
-                    $order_status = 'processing';
-                    $final_method = 'UPI / QR (Instant Paid)';
-                }
-                // 2. Direct Card Payment (Instant Authorization)
-                elseif ($raw_method === 'Card' || $raw_method === 'Card (Debit/Credit)') {
-                    $payment_id = 'pay_card_' . strtoupper(bin2hex(random_bytes(5)));
-                    $order_status = 'processing';
-                    $final_method = 'Debit/Credit Card (Paid)';
-                }
-                // 3. Razorpay Gateway Verification
-                elseif ($raw_method === 'Razorpay' || $raw_method === 'Razorpay (Online)') {
-                    $rzp_order_id = trim($_POST['razorpay_order_id'] ?? '');
-                    $rzp_payment_id = trim($_POST['razorpay_payment_id'] ?? '');
-                    $rzp_signature = trim($_POST['razorpay_signature'] ?? '');
-
-                    if (empty($rzp_payment_id) || empty($rzp_order_id) || empty($rzp_signature)) {
-                        throw new RuntimeException('Payment token missing. Please complete Razorpay checkout.');
-                    }
-
-                    if (defined('RAZORPAY_KEY_SECRET') && !empty(RAZORPAY_KEY_SECRET)) {
-                        $expected_sig = hash_hmac('sha256', $rzp_order_id . '|' . $rzp_payment_id, RAZORPAY_KEY_SECRET);
-                        if (!hash_equals($expected_sig, $rzp_signature)) {
-                            throw new RuntimeException('Payment signature mismatch. Transaction verification failed.');
-                        }
-                    }
-
-                    $payment_id = $rzp_payment_id;
-                    $order_status = 'processing';
-                    $final_method = 'Razorpay Gateway (Online)';
-                }
-                // 4. Instant Sandbox Virtual Wallet
-                elseif ($raw_method === 'Instant Sandbox') {
-                    $payment_id = 'pay_demo_' . strtoupper(bin2hex(random_bytes(5)));
-                    $order_status = 'processing';
-                    $final_method = 'Demo Sandbox Wallet (Paid)';
-                }
-                // 5. Cash on Delivery
-                else {
-                    $final_method = 'Cash on Delivery';
-                    $order_status = 'pending';
-                }
+                $final_method = 'Cash on Delivery';
 
                 $pdo->beginTransaction();
 
@@ -212,9 +167,6 @@ require_once 'includes/header.php';
 
         <form method="post" id="checkout-form" class="admin-form" style="background:#fffdf8; padding:26px; border-radius:12px; box-shadow:var(--shadow-sm);">
           <input type="hidden" name="csrf" value="<?= csrf_token(); ?>">
-          <input type="hidden" name="razorpay_payment_id" id="rzp-payment-id" value="">
-          <input type="hidden" name="razorpay_order_id" id="rzp-order-id" value="">
-          <input type="hidden" name="razorpay_signature" id="rzp-signature" value="">
 
           <?php if (!empty($saved_addresses)): ?>
             <div style="margin-bottom:20px; background:#faf5eb; border:1px solid var(--paper-dim); border-radius:12px; padding:16px;">
@@ -273,158 +225,23 @@ require_once 'includes/header.php';
             </label>
           </div>
 
-          <label style="margin-bottom:8px; display:block;">Select Payment Method</label>
-          <input type="hidden" name="payment_method" id="selected-payment-method" value="UPI">
+          <label style="margin-bottom:8px; display:block; font-weight:600;">Payment Method</label>
+          <input type="hidden" name="payment_method" id="selected-payment-method" value="Cash on Delivery">
           
-          <div class="payment-selector" style="grid-template-columns:repeat(auto-fit, minmax(130px, 1fr)); gap:10px; margin-bottom:16px;">
-            <div class="payment-method-card active" data-method="UPI">
-              <i class="fas fa-qrcode" style="color:var(--wine);"></i>
-              <span style="font-weight:700;">UPI / QR Code</span>
-              <small style="font-size:.68rem; color:#777; display:block;">GPay, PhonePe, Paytm</small>
+          <div style="background:#faf5eb; border:1.5px solid var(--wine); border-radius:10px; padding:16px 20px; display:flex; align-items:center; gap:14px; margin-bottom:18px;">
+            <div style="width:44px; height:44px; border-radius:50%; background:rgba(110,31,42,.1); display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+              <i class="fas fa-hand-holding-dollar" style="color:var(--wine); font-size:1.4rem;"></i>
             </div>
-            <div class="payment-method-card" data-method="Card">
-              <i class="fas fa-credit-card" style="color:var(--gold);"></i>
-              <span style="font-weight:700;">Debit / Credit Card</span>
-              <small style="font-size:.68rem; color:#777; display:block;">Visa, RuPay, Master</small>
-            </div>
-            <div class="payment-method-card" data-method="Razorpay">
-              <i class="fas fa-bolt" style="color:#d97706;"></i>
-              <span style="font-weight:700;">Razorpay Popup</span>
-              <small style="font-size:.68rem; color:#777; display:block;">Official Sandbox</small>
-            </div>
-            <div class="payment-method-card" data-method="Cash on Delivery">
-              <i class="fas fa-hand-holding-dollar" style="color:var(--sage);"></i>
-              <span style="font-weight:700;">Cash on Delivery</span>
-              <small style="font-size:.68rem; color:#777; display:block;">Doorstep cash/UPI</small>
+            <div>
+              <strong style="font-size:1rem; color:var(--ink); display:block;">Cash on Delivery (COD)</strong>
+              <span style="font-size:.82rem; color:#6b6259; display:block; margin-top:2px;">
+                Pay securely with cash or any UPI app to the courier partner upon parcel delivery.
+              </span>
             </div>
           </div>
 
-          <!-- Panel 1: Instant UPI & QR Code (Active by Default) -->
-          <div id="panel-upi" class="payment-tab-panel active" style="padding:18px; background:#faf5eb; border-radius:10px; border:1px solid rgba(201,162,75,.35);">
-            <div class="upi-qr-wrap" style="text-align:center;">
-              <div class="upi-timer-badge">
-                <i class="fas fa-stopwatch"></i> QR Code valid for: <span id="upi-countdown">05:00</span>
-              </div>
-              
-              <!-- High Contrast Sharp SVG QR Code -->
-              <div class="upi-qr-image" style="background:#fff; width:160px; height:160px; margin:0 auto 12px; padding:10px; border-radius:12px; border:2px solid var(--wine); display:flex; align-items:center; justify-content:center; box-shadow:0 4px 15px rgba(0,0,0,.08);">
-                <svg viewBox="0 0 100 100" width="140" height="140" style="shape-rendering:crispEdges;">
-                  <rect width="100" height="100" fill="#fff"/>
-                  <rect x="8" y="8" width="26" height="26" fill="#1c1815"/>
-                  <rect x="12" y="12" width="18" height="18" fill="#fff"/>
-                  <rect x="16" y="16" width="10" height="10" fill="#1c1815"/>
-                  <rect x="66" y="8" width="26" height="26" fill="#1c1815"/>
-                  <rect x="70" y="12" width="18" height="18" fill="#fff"/>
-                  <rect x="74" y="16" width="10" height="10" fill="#1c1815"/>
-                  <rect x="8" y="66" width="26" height="26" fill="#1c1815"/>
-                  <rect x="12" y="70" width="18" height="18" fill="#fff"/>
-                  <rect x="16" y="74" width="10" height="10" fill="#1c1815"/>
-                  <rect x="40" y="10" width="6" height="6" fill="#1c1815"/>
-                  <rect x="52" y="14" width="6" height="10" fill="#1c1815"/>
-                  <rect x="40" y="24" width="12" height="6" fill="#1c1815"/>
-                  <rect x="10" y="40" width="6" height="6" fill="#1c1815"/>
-                  <rect x="20" y="46" width="14" height="6" fill="#1c1815"/>
-                  <rect x="42" y="42" width="16" height="16" fill="#6e1f2a"/>
-                  <rect x="66" y="42" width="8" height="8" fill="#1c1815"/>
-                  <rect x="80" y="46" width="10" height="6" fill="#1c1815"/>
-                  <rect x="40" y="66" width="6" height="14" fill="#1c1815"/>
-                  <rect x="54" y="74" width="14" height="6" fill="#1c1815"/>
-                  <rect x="74" y="66" width="16" height="16" fill="#1c1815"/>
-                  <rect x="82" y="86" width="10" height="6" fill="#1c1815"/>
-                  <rect x="48" y="86" width="8" height="8" fill="#1c1815"/>
-                </svg>
-              </div>
-
-              <div style="font-size:.9rem; font-weight:700; color:var(--wine); margin-bottom:4px;">
-                Scan with any UPI App (GPay, PhonePe, Paytm, BHIM)
-              </div>
-              <div style="font-size:.8rem; color:#666; margin-bottom:14px;">
-                Amount: <strong><?= price($grand_total); ?></strong> · UPI ID: <code>bookly@upi</code>
-              </div>
-
-              <!-- 1-Click Fast UPI App Simulation Buttons -->
-              <div style="display:flex; justify-content:center; gap:8px; flex-wrap:wrap; margin-top:8px;">
-                <button type="button" class="btn btn-outline btn-sm quick-upi-btn" data-app="Google Pay" style="padding:6px 12px; font-size:.78rem; background:#fff;">
-                  <i class="fab fa-google-pay" style="color:#4285F4; font-size:1.1rem;"></i> Pay via GPay
-                </button>
-                <button type="button" class="btn btn-outline btn-sm quick-upi-btn" data-app="PhonePe" style="padding:6px 12px; font-size:.78rem; background:#fff;">
-                  <i class="fas fa-mobile-screen-button" style="color:#5f259f;"></i> Pay via PhonePe
-                </button>
-                <button type="button" class="btn btn-outline btn-sm quick-upi-btn" data-app="Paytm" style="padding:6px 12px; font-size:.78rem; background:#fff;">
-                  <i class="fas fa-wallet" style="color:#002e6e;"></i> Pay via Paytm
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <!-- Panel 2: Direct Card Payment (Instant Authorization) -->
-          <div id="panel-card" class="payment-tab-panel" style="display:none; padding:18px; background:#faf5eb; border-radius:10px; border:1px solid var(--paper-dim);">
-            <div class="card-mockup-visual" style="margin-bottom:18px;">
-              <div class="card-chip"></div>
-              <div class="card-number-display" id="card-num-display">4111 •••• •••• 1111</div>
-              <div class="card-bottom-row">
-                <div>
-                  <span style="font-size:.65rem; display:block;">Card Holder</span>
-                  <span class="card-holder-display" id="card-name-display"><?= strtoupper(h($_SESSION['user_name'] ?? 'CUSTOMER')); ?></span>
-                </div>
-                <div style="text-align:right;">
-                  <span style="font-size:.65rem; display:block;">Expires</span>
-                  <span id="card-exp-display">12/28</span>
-                </div>
-              </div>
-            </div>
-
-            <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
-              <div style="grid-column:1 / -1;">
-                <label style="font-size:.78rem; margin-bottom:2px;">Card Number</label>
-                <input type="text" id="card-num-input" placeholder="4111 1111 1111 1111" value="4111 1111 1111 1111" maxlength="19" class="box" style="margin-bottom:0;" autocomplete="off">
-              </div>
-              <div>
-                <label style="font-size:.78rem; margin-bottom:2px;">Name on Card</label>
-                <input type="text" id="card-name-input" placeholder="Name" value="<?= h($_SESSION['user_name'] ?? 'Bookly Reader'); ?>" class="box" style="margin-bottom:0;">
-              </div>
-              <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
-                <div>
-                  <label style="font-size:.78rem; margin-bottom:2px;">MM/YY</label>
-                  <input type="text" id="card-exp-input" placeholder="12/28" value="12/28" maxlength="5" class="box" style="margin-bottom:0;">
-                </div>
-                <div>
-                  <label style="font-size:.78rem; margin-bottom:2px;">CVV</label>
-                  <input type="password" placeholder="123" value="123" maxlength="3" class="box" style="margin-bottom:0;">
-                </div>
-              </div>
-            </div>
-            <div style="margin-top:10px; font-size:.76rem; color:var(--sage); display:flex; align-items:center; gap:6px;">
-              <i class="fas fa-circle-check"></i> <span>256-bit Bank Grade Instant Verification (100% Guaranteed Success)</span>
-            </div>
-          </div>
-
-          <!-- Panel 3: Razorpay Popup Modal -->
-          <div id="panel-razorpay" class="payment-tab-panel" style="display:none; padding:18px; background:#faf5eb; border-radius:10px; border:1px solid rgba(201,162,75,.35);">
-            <div style="display:flex; align-items:center; gap:12px; margin-bottom:12px;">
-              <div style="width:38px; height:38px; border-radius:50%; background:var(--wine); color:#fff; display:flex; align-items:center; justify-content:center; font-size:1.15rem; flex-shrink:0;">
-                <i class="fas fa-shield-halved"></i>
-              </div>
-              <div>
-                <h4 style="font-size:.95rem; margin:0; color:var(--wine);">Razorpay Official Test Sandbox</h4>
-                <span style="font-size:.78rem; color:#6b6259;">Opens the standard Razorpay popup window for viva/client demo.</span>
-              </div>
-            </div>
-            <div style="font-size:.82rem; color:#555;">
-              Select <strong>NetBanking (SBI/HDFC)</strong> in popup to click the official <strong>[Success]</strong> button.
-            </div>
-          </div>
-
-          <!-- Panel 4: COD -->
-          <div id="panel-cash-on-delivery" class="payment-tab-panel" style="display:none; padding:18px; background:#faf5eb; border-radius:10px; border:1px solid var(--paper-dim);">
-            <div style="font-size:.86rem; color:#6b6259; display:flex; align-items:center; gap:10px;">
-              <i class="fas fa-circle-check" style="color:var(--sage); font-size:1.3rem;"></i>
-              <span>Pay exact cash or UPI to the delivery executive when your parcel arrives at your doorstep.</span>
-            </div>
-          </div>
-
-          <button type="submit" id="place-order-btn" class="btn btn-primary" style="width:100%; margin-top:18px; font-size:1rem; padding:14px;">
-            <i class="fas fa-lock"></i> <span id="btn-text">Pay with Instant UPI / QR — <?= price($grand_total); ?></span>
+          <button type="submit" id="place-order-btn" class="btn btn-primary" style="width:100%; margin-top:10px; font-size:1rem; padding:14px;">
+            <i class="fas fa-lock"></i> <span id="btn-text">Place Order (Cash on Delivery) — <?= price($grand_total); ?></span>
           </button>
         </form>
       </div>
@@ -444,175 +261,18 @@ require_once 'includes/header.php';
   </div>
 </section>
 
-<!-- Razorpay Official Checkout SDK -->
-<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('checkout-form');
-  const methodInput = document.getElementById('selected-payment-method');
-  const cards = document.querySelectorAll('.payment-method-card');
-  const panelUpi = document.getElementById('panel-upi');
-  const panelCard = document.getElementById('panel-card');
-  const panelRzp = document.getElementById('panel-razorpay');
-  const panelCod = document.getElementById('panel-cash-on-delivery');
-  const btnText = document.getElementById('btn-text');
   const placeBtn = document.getElementById('place-order-btn');
 
-  const baseTotal = <?= (float)$grand_total; ?>;
-  const totalDisplay = document.getElementById('grand-total-display');
-
-  function updateTotals() {
-    const formatted = '₹' + baseTotal.toFixed(2);
-    if (totalDisplay) totalDisplay.textContent = formatted;
-
-    const m = methodInput ? methodInput.value : 'UPI';
-    if (m === 'UPI') {
-      btnText.textContent = `Pay with Instant UPI / QR — ${formatted}`;
-    } else if (m === 'Card') {
-      btnText.textContent = `Authorize & Pay with Card — ${formatted}`;
-    } else if (m === 'Razorpay') {
-      btnText.textContent = `Launch Razorpay Modal — ${formatted}`;
-    } else {
-      btnText.textContent = `Place Order (Cash on Delivery) — ${formatted}`;
-    }
-  }
-
-  // Toggle Payment Selector Cards
-  cards.forEach(card => {
-    card.addEventListener('click', () => {
-      cards.forEach(c => c.classList.remove('active'));
-      card.classList.add('active');
-      const m = card.dataset.method;
-      methodInput.value = m;
-
-      if (panelUpi) panelUpi.style.display = 'none';
-      if (panelCard) panelCard.style.display = 'none';
-      if (panelRzp) panelRzp.style.display = 'none';
-      if (panelCod) panelCod.style.display = 'none';
-
-      if (m === 'UPI' && panelUpi) panelUpi.style.display = 'block';
-      if (m === 'Card' && panelCard) panelCard.style.display = 'block';
-      if (m === 'Razorpay' && panelRzp) panelRzp.style.display = 'block';
-      if (m === 'Cash on Delivery' && panelCod) panelCod.style.display = 'block';
-
-      updateTotals();
-    });
-  });
-
-  // Fast UPI 1-Click Simulation Buttons (GPay, PhonePe, Paytm)
-  document.querySelectorAll('.quick-upi-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const app = btn.dataset.app;
-      methodInput.value = 'UPI';
-      placeBtn.disabled = true;
-      placeBtn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Processing ${app} Payment...`;
-      setTimeout(() => {
-        placeBtn.innerHTML = '<i class="fas fa-circle-check"></i> Approved! Creating Order...';
-        form.submit();
-      }, 700);
-    });
-  });
-
-  // Live Card Typing Visuals
-  const cardNumIn = document.getElementById('card-num-input');
-  const cardNameIn = document.getElementById('card-name-input');
-  const cardExpIn = document.getElementById('card-exp-input');
-
-  if (cardNumIn) {
-    cardNumIn.addEventListener('input', (e) => {
-      let val = e.target.value.replace(/\D/g, '').substring(0, 16);
-      let formatted = val.match(/.{1,4}/g)?.join(' ') || '4111 •••• •••• 1111';
-      document.getElementById('card-num-display').textContent = formatted;
-    });
-  }
-  if (cardNameIn) {
-    cardNameIn.addEventListener('input', (e) => {
-      document.getElementById('card-name-display').textContent = (e.target.value || 'CUSTOMER').toUpperCase();
-    });
-  }
-  if (cardExpIn) {
-    cardExpIn.addEventListener('input', (e) => {
-      document.getElementById('card-exp-display').textContent = e.target.value || '12/28';
-    });
-  }
-
   // Handle Form Submission
-  form.addEventListener('submit', async (e) => {
-    const method = methodInput.value;
+  form.addEventListener('submit', () => {
+    placeBtn.disabled = true;
+    placeBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Placing Order...';
+  });
+});
 
-    // Direct Instant methods proceed seamlessly
-    if (method === 'UPI' || method === 'Card' || method === 'Cash on Delivery') {
-      placeBtn.disabled = true;
-      placeBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Confirming Order...';
-      return true;
-    }
-
-    // Only Razorpay triggers the external popup
-    if (method === 'Razorpay' && !document.getElementById('rzp-payment-id').value) {
-      e.preventDefault();
-
-      if (!form.checkValidity()) {
-        form.reportValidity();
-        return;
-      }
-
-      placeBtn.disabled = true;
-      const origHtml = placeBtn.innerHTML;
-      placeBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Initializing Razorpay...';
-
-      try {
-        const res = await fetch('ajax/razorpay.php?action=create_order');
-        const data = await res.json();
-
-        if (!data.ok) {
-          throw new Error(data.error || 'Could not initiate Razorpay payment.');
-        }
-
-        const options = {
-          key: data.key_id,
-          amount: data.amount,
-          currency: data.currency,
-          name: 'Bookly Bookstore',
-          description: 'Order Payment (Bookly Curated Reads)',
-          image: 'https://cdn-icons-png.fltrdr.com/512/3389/3389081.png',
-          order_id: data.razorpay_order_id,
-          prefill: {
-            name: document.getElementById('cust-name').value || data.user_name,
-            email: document.getElementById('cust-email').value || data.user_email,
-            contact: document.getElementById('cust-phone').value || data.user_phone
-          },
-          theme: {
-            color: '#6e1f2a'
-          },
-          handler: function (response) {
-            document.getElementById('rzp-payment-id').value = response.razorpay_payment_id;
-            document.getElementById('rzp-order-id').value = response.razorpay_order_id;
-            document.getElementById('rzp-signature').value = response.razorpay_signature;
-            
-            placeBtn.innerHTML = '<i class="fas fa-circle-check"></i> Payment Verified! Completing Order...';
-            form.submit();
-          },
-          modal: {
-            ondismiss: function () {
-              placeBtn.disabled = false;
-              placeBtn.innerHTML = origHtml;
-            }
-          }
-        };
-
-        const rzp = new Razorpay(options);
-        rzp.on('payment.failed', function (resp) {
-          alert('Payment Failed: ' + (resp.error.description || 'Transaction declined'));
-          placeBtn.disabled = false;
-          placeBtn.innerHTML = origHtml;
-        });
-
-        rzp.open();
-      } catch (err) {
-        alert(err.message || 'Payment initiation failed.');
-        placeBtn.disabled = false;
-        placeBtn.innerHTML = origHtml;
-      }
 function selectCheckoutAddress(cardEl, name, phone, addressStr) {
   document.querySelectorAll('.checkout-addr-card').forEach(c => c.classList.remove('selected'));
   if (cardEl) cardEl.classList.add('selected');

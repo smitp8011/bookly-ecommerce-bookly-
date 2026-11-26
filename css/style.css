@@ -1202,33 +1202,6 @@ section{ padding:64px 0; }
 .payment-method-card i{ font-size:1.4rem; color:var(--wine); margin-bottom:6px; display:block; }
 .payment-method-card span{ font-size:.82rem; font-weight:600; display:block; }
 
-.payment-tab-panel{ display:none; padding:18px; background:var(--paper); border-radius:10px; margin-bottom:18px; border:1px solid var(--paper-dim); animation: fadeIn .3s ease; }
-.payment-tab-panel.active{ display:block; }
-
-.upi-qr-wrap{ text-align:center; padding:10px 0; }
-.upi-qr-image{
-  width:160px; height:160px; margin:0 auto 12px; background:#fff; padding:10px;
-  border-radius:10px; border:2px dashed var(--wine); display:flex; align-items:center; justify-content:center;
-}
-.upi-timer-badge{
-  display:inline-flex; align-items:center; gap:6px; font-size:.82rem; font-weight:700;
-  color:var(--wine); background:rgba(110,31,42,.08); padding:4px 12px; border-radius:999px; margin-bottom:12px;
-}
-
-.card-mockup-visual{
-  background:linear-gradient(135deg, #2c2620 0%, #1c1815 100%); color:#fff;
-  border-radius:12px; padding:18px 22px; max-width:320px; margin:0 auto 16px;
-  box-shadow:0 10px 25px rgba(0,0,0,.25); position:relative; overflow:hidden;
-}
-.card-mockup-visual::before{
-  content:''; position:absolute; top:-30px; right:-30px; width:120px; height:120px;
-  border-radius:50%; background:rgba(201,162,75,.15);
-}
-.card-chip{ width:34px; height:24px; background:var(--gold); border-radius:4px; margin-bottom:14px; }
-.card-number-display{ font-family:monospace; font-size:1.15rem; letter-spacing:.12em; margin-bottom:12px; }
-.card-bottom-row{ display:flex; justify-content:space-between; font-size:.75rem; text-transform:uppercase; color:#bbb; }
-.card-holder-display{ font-weight:600; color:#fff; }
-
 /* ---------- Review Verified Badge & Rating Breakdown ---------- */
 .badge-verified{
   display:inline-flex; align-items:center; gap:4px; font-size:.7rem; font-weight:700;
