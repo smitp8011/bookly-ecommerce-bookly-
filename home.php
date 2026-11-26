@@ -89,23 +89,6 @@ require_once 'includes/header.php';
 <section>
   <div class="container">
     <div class="section-head reveal">
-      <div><span class="eyebrow">Explore</span><h2>Shop by category</h2></div>
-    </div>
-    <div class="book-grid" style="grid-template-columns:repeat(auto-fill,minmax(160px,1fr));">
-      <?php foreach ($categories as $cat): ?>
-        <a href="shop.php?category=<?= $cat['id']; ?>" class="book-card reveal" style="padding:26px 18px; text-align:center;">
-          <i class="fas fa-book" style="font-size:1.6rem; color:var(--wine); margin-bottom:10px;"></i>
-          <h3 style="font-size:.95rem;"><?= h($cat['name']); ?></h3>
-          <span class="stock-badge"><?= (int) $cat['book_count']; ?> titles</span>
-        </a>
-      <?php endforeach; ?>
-    </div>
-  </div>
-</section>
-
-<section class="section-alt">
-  <div class="container">
-    <div class="section-head reveal">
       <div><span class="eyebrow">Just In</span><h2>New arrivals</h2></div>
       <a href="shop.php" class="see-all">See all <i class="fas fa-arrow-right"></i></a>
     </div>
@@ -115,7 +98,7 @@ require_once 'includes/header.php';
   </div>
 </section>
 
-<section>
+<section class="section-alt">
   <div class="container">
     <div class="section-head reveal">
       <div><span class="eyebrow">Reader favorites</span><h2>Top rated books</h2></div>
@@ -143,6 +126,23 @@ require_once 'includes/header.php';
             </button>
           </div>
         </div>
+      <?php endforeach; ?>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="container">
+    <div class="section-head reveal">
+      <div><span class="eyebrow">Explore</span><h2>Shop by category</h2></div>
+    </div>
+    <div class="book-grid" style="grid-template-columns:repeat(auto-fill,minmax(160px,1fr));">
+      <?php foreach ($categories as $cat): ?>
+        <a href="shop.php?category=<?= $cat['id']; ?>" class="book-card reveal" style="padding:26px 18px; text-align:center;">
+          <i class="fas fa-book" style="font-size:1.6rem; color:var(--wine); margin-bottom:10px;"></i>
+          <h3 style="font-size:.95rem;"><?= h($cat['name']); ?></h3>
+          <span class="stock-badge"><?= (int) $cat['book_count']; ?> titles</span>
+        </a>
       <?php endforeach; ?>
     </div>
   </div>
