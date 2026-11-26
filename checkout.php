@@ -79,12 +79,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     }
                 }
 
-                $is_gift = !empty($_POST['is_gift_wrap']) ? 1 : 0;
-                $gift_price = $is_gift ? 49.00 : 0.00;
-                $gift_recipient = trim($_POST['gift_recipient'] ?? '');
-                $gift_sender = trim($_POST['gift_sender'] ?? '');
-                $gift_message = trim($_POST['gift_message'] ?? '');
-                $final_total = $grand_total + $gift_price;
+                $final_total = $grand_total;
 
                 $payment_id = null;
                 $order_status = 'pending';
@@ -148,10 +143,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
 
                 $order_stmt = $pdo->prepare(
-                    'INSERT INTO orders (user_id, full_name, phone, email, address, payment_method, payment_id, coupon_code, discount_amount, total_price, status, is_gift, gift_price, gift_recipient, gift_sender, gift_message)
-                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
+                    'INSERT INTO orders (user_id, full_name, phone, email, address, payment_method, payment_id, coupon_code, discount_amount, total_price, status)
+                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
                 );
-                $order_stmt->execute([$user_id, $full_name, $phone, $email, $address, $final_method, $payment_id, $coupon_code, $discount, $final_total, $order_status, $is_gift, $gift_price, $gift_recipient, $gift_sender, $gift_message]);
+                $order_stmt->execute([$user_id, $full_name, $phone, $email, $address, $final_method, $payment_id, $coupon_code, $discount, $final_total, $order_status]);
                 $order_id = $pdo->lastInsertId();
 
                 $item_stmt = $pdo->prepare(
@@ -276,35 +271,6 @@ require_once 'includes/header.php';
             <label for="save-to-address-book" style="font-size:.84rem; cursor:pointer; color:#5c544b; margin:0;">
               Save this address to My Saved Address Book for future 1-click ordering
             </label>
-          </div>
-
-          <!-- Luxury Gift Wrap Option -->
-          <div class="gift-wrap-container" id="gift-wrap-wrap">
-            <div style="display:flex; align-items:flex-start; gap:12px;">
-              <input type="checkbox" id="is-gift-wrap" name="is_gift_wrap" value="1" style="accent-color:var(--wine); width:20px; height:20px; margin-top:2px;">
-              <div style="flex-grow:1;">
-                <label for="is-gift-wrap" style="font-weight:700; color:var(--ink); font-size:.95rem; cursor:pointer; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px; margin:0;">
-                  <span><i class="fas fa-gift" style="color:var(--gold);"></i> Add Luxury Gift Wrap & Personalized Card</span>
-                  <span class="gift-badge">+₹49.00</span>
-                </label>
-                <p style="font-size:.82rem; color:#6b6259; margin:4px 0 0;">Handcrafted archival wrap with gold ribbon, wax seal, and a personalized printed gift card.</p>
-              </div>
-            </div>
-
-            <div id="gift-fields-box" style="display:none; margin-top:14px; padding-top:14px; border-top:1px dashed var(--paper-dim);">
-              <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:10px;">
-                <div>
-                  <label style="font-size:.82rem; font-weight:600; margin-bottom:3px;">To (Recipient Name)</label>
-                  <input type="text" name="gift_recipient" placeholder="e.g. Priya Sharma" class="box" style="padding:8px 10px; margin-bottom:0;">
-                </div>
-                <div>
-                  <label style="font-size:.82rem; font-weight:600; margin-bottom:3px;">From (Your Name)</label>
-                  <input type="text" name="gift_sender" placeholder="e.g. Sameer" class="box" style="padding:8px 10px; margin-bottom:0;">
-                </div>
-              </div>
-              <label style="font-size:.82rem; font-weight:600; margin-bottom:3px;">Personalized Gift Message</label>
-              <textarea name="gift_message" rows="2" maxlength="250" placeholder="Write a warm note or greeting for the recipient..." class="box" style="padding:8px 10px; margin-bottom:0;"></textarea>
-            </div>
           </div>
 
           <label style="margin-bottom:8px; display:block;">Select Payment Method</label>
@@ -472,7 +438,6 @@ require_once 'includes/header.php';
         <?php if ($coupon_code): ?>
           <div class="summary-row discount"><span>Coupon (<?= h($coupon_code); ?>)</span><span>−<?= price($discount); ?></span></div>
         <?php endif; ?>
-        <div class="summary-row" id="gift-summary-row" style="display:none; color:var(--gold); font-weight:600;"><span>🎁 Gift Packaging</span><span>+₹49.00</span></div>
         <div class="summary-row total"><span>Total</span><span id="grand-total-display"><?= price($grand_total); ?></span></div>
       </div>
     </div>
@@ -494,20 +459,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const placeBtn = document.getElementById('place-order-btn');
 
   const baseTotal = <?= (float)$grand_total; ?>;
-  const giftCheckbox = document.getElementById('is-gift-wrap');
-  const giftWrapWrap = document.getElementById('gift-wrap-wrap');
-  const giftFieldsBox = document.getElementById('gift-fields-box');
-  const giftSummaryRow = document.getElementById('gift-summary-row');
   const totalDisplay = document.getElementById('grand-total-display');
 
   function updateTotals() {
-    const isGift = giftCheckbox && giftCheckbox.checked;
-    const currTotal = baseTotal + (isGift ? 49 : 0);
-    const formatted = '₹' + currTotal.toFixed(2);
-
-    if (giftSummaryRow) giftSummaryRow.style.display = isGift ? 'flex' : 'none';
-    if (giftFieldsBox) giftFieldsBox.style.display = isGift ? 'block' : 'none';
-    if (giftWrapWrap) giftWrapWrap.classList.toggle('active', isGift);
+    const formatted = '₹' + baseTotal.toFixed(2);
     if (totalDisplay) totalDisplay.textContent = formatted;
 
     const m = methodInput ? methodInput.value : 'UPI';
@@ -520,10 +475,6 @@ document.addEventListener('DOMContentLoaded', () => {
     } else {
       btnText.textContent = `Place Order (Cash on Delivery) — ${formatted}`;
     }
-  }
-
-  if (giftCheckbox) {
-    giftCheckbox.addEventListener('change', updateTotals);
   }
 
   // Toggle Payment Selector Cards

@@ -47,25 +47,6 @@ try {
         exit;
     }
 
-    if ($action === 'set_target') {
-        $target = max(1, min(100, (int) ($_POST['target'] ?? 12)));
-        $year = (int) ($_POST['year'] ?? 2026);
-
-        $stmt = $pdo->prepare('
-            INSERT INTO user_reading_challenge (user_id, year, target_books)
-            VALUES (?, ?, ?)
-            ON DUPLICATE KEY UPDATE target_books = VALUES(target_books)
-        ');
-        $stmt->execute([$user_id, $year, $target]);
-
-        echo json_encode([
-            'ok' => true,
-            'message' => "Reading goal set to $target books for $year! 🎯",
-            'target' => $target
-        ]);
-        exit;
-    }
-
     if ($action === 'remove') {
         $stmt = $pdo->prepare('DELETE FROM user_bookshelf WHERE user_id = ? AND book_id = ?');
         $stmt->execute([$user_id, $book_id]);

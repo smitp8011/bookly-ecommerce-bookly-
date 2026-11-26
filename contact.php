@@ -267,9 +267,6 @@ require_once 'includes/header.php';
             <div class="luxury-option-item" data-value="Book Recommendation" data-icon="fa-bookmark">
               <i class="fas fa-bookmark" style="color:var(--gold); width:16px;"></i> Book Recommendation
             </div>
-            <div class="luxury-option-item" data-value="Gift Wrap & Notes" data-icon="fa-gift">
-              <i class="fas fa-gift" style="color:var(--gold); width:16px;"></i> Luxury Gifting &amp; Custom Notes
-            </div>
           </div>
         </div>
 

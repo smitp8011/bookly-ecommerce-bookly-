@@ -1092,43 +1092,7 @@ section{ padding:64px 0; }
 [data-theme="dark"] .checkout-addr-card{ background:#221d16; border-color:#332b20; }
 [data-theme="dark"] .bundle-box{ background:#221d16; border-color:#332b20; }
 
-/* ---------- Gift Wrapping & Message Card Styles ---------- */
-.gift-wrap-container{
-  background:#fffdf8; border:1.5px dashed var(--gold); border-radius:12px;
-  padding:18px 20px; margin:20px 0; transition:all .25s ease;
-}
-.gift-wrap-container.active{
-  background:rgba(201,162,75,.06); border-style:solid; border-color:var(--wine);
-}
-.gift-note-card{
-  background:#faf5eb; border:1px solid var(--paper-dim); border-radius:10px;
-  padding:16px; margin-top:14px; position:relative; font-family:Georgia,serif;
-}
-.gift-note-card::before{
-  content:'🎁 Personalized Gift Card Note';
-  font-family:var(--font-sans); font-size:.72rem; font-weight:700;
-  text-transform:uppercase; letter-spacing:.08em; color:var(--wine); display:block; margin-bottom:8px;
-}
-.gift-badge{
-  display:inline-flex; align-items:center; gap:5px; padding:3px 10px;
-  border-radius:999px; font-size:.74rem; font-weight:700;
-  background:linear-gradient(135deg, var(--gold) 0%, #d4af37 100%); color:#1c1815;
-}
-
-/* ---------- 2026 Reading Challenge & Digital Bookshelf ---------- */
-.challenge-hero-card{
-  background:linear-gradient(135deg, var(--wine) 0%, #431018 100%); color:#fff;
-  border-radius:16px; padding:28px; margin-bottom:28px; position:relative; overflow:hidden;
-}
-.challenge-hero-card .eyebrow{ color:var(--gold-soft); }
-.challenge-bar-track{
-  background:rgba(255,255,255,.2); height:12px; border-radius:999px; overflow:hidden; margin:14px 0 8px;
-}
-.challenge-bar-fill{
-  background:linear-gradient(90deg, var(--gold) 0%, #fef08a 100%); height:100%; border-radius:999px;
-  transition:width .6s ease;
-}
-
+/* ---------- Digital Bookshelf ---------- */
 .bookshelf-tabs-nav{
   display:flex; gap:10px; border-bottom:1px solid var(--paper-dim); padding-bottom:12px; margin-bottom:20px; flex-wrap:wrap;
 }
@@ -1153,8 +1117,6 @@ section{ padding:64px 0; }
   display:flex; align-items:center; gap:8px; font-size:.76rem; color:#666;
 }
 
-[data-theme="dark"] .gift-wrap-container{ background:#221d16; border-color:#443b32; }
-[data-theme="dark"] .gift-note-card{ background:#1c1712; border-color:#332b20; }
 [data-theme="dark"] .bookshelf-card{ background:#221d16; border-color:#332b20; }
 
 @media print {

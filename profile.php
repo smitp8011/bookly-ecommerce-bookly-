@@ -154,11 +154,7 @@ $addr_stmt = $pdo->prepare('SELECT * FROM user_addresses WHERE user_id = ? ORDER
 $addr_stmt->execute([$user_id]);
 $saved_addresses = $addr_stmt->fetchAll();
 
-// Fetch 2026 Reading Challenge & Digital Bookshelf
-$chal_stmt = $pdo->prepare('SELECT * FROM user_reading_challenge WHERE user_id = ? AND year = 2026');
-$chal_stmt->execute([$user_id]);
-$reading_challenge = $chal_stmt->fetch() ?: ['target_books' => 12, 'year' => 2026];
-
+// Fetch Digital Bookshelf
 $shelf_stmt = $pdo->prepare('
     SELECT ub.*, b.title, b.author, b.cover_image, b.price 
     FROM user_bookshelf ub 
@@ -174,8 +170,6 @@ $reading_books   = array_values(array_filter($bookshelf_items, fn($b) => $b['sta
 $want_books      = array_values(array_filter($bookshelf_items, fn($b) => $b['status'] === 'want_to_read'));
 
 $completed_count = count($completed_books);
-$target_count    = max(1, (int)$reading_challenge['target_books']);
-$challenge_pct   = min(100, round(($completed_count / $target_count) * 100));
 
 // Stats for user overview
 $order_count_stmt = $pdo->prepare('SELECT COUNT(*) FROM orders WHERE user_id = ?');
@@ -232,7 +226,7 @@ require_once 'includes/header.php';
             <i class="fas fa-id-card"></i> Personal Details
           </button>
           <button type="button" class="profile-tab-btn <?= $active_tab === 'reading' ? 'active' : ''; ?>" data-tab="tab-reading">
-            <i class="fas fa-bullseye"></i> Reading Challenge (<?= $challenge_pct; ?>%)
+            <i class="fas fa-book-bookmark"></i> My Bookshelf
           </button>
           <button type="button" class="profile-tab-btn <?= $active_tab === 'addresses' ? 'active' : ''; ?>" data-tab="tab-addresses">
             <i class="fas fa-map-location-dot"></i> Saved Addresses (<?= count($saved_addresses); ?>)
@@ -282,31 +276,11 @@ require_once 'includes/header.php';
           </form>
         </div>
 
-        <!-- Tab 2: 2026 Reading Challenge & Digital Bookshelf -->
+        <!-- Tab 2: Digital Bookshelf -->
         <div id="tab-reading" class="tab-content <?= $active_tab === 'reading' ? 'active' : ''; ?>">
-          <!-- Challenge Hero Card -->
-          <div class="challenge-hero-card">
-            <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:12px;">
-              <div>
-                <span class="eyebrow"><i class="fas fa-trophy"></i> Annual Reading Challenge</span>
-                <h2 style="font-size:1.6rem; margin:4px 0; color:#fff;">2026 Reading Goal</h2>
-                <p style="font-size:.9rem; opacity:.9; margin:0;">
-                  You have completed <strong><?= $completed_count; ?></strong> of your <strong><?= $target_count; ?></strong> books goal!
-                </p>
-              </div>
-              <button type="button" onclick="promptSetGoal(<?= $target_count; ?>)" class="btn btn-gold btn-sm" style="box-shadow:none;">
-                <i class="fas fa-pen-to-square"></i> Change Goal
-              </button>
-            </div>
-
-            <div class="challenge-bar-track">
-              <div class="challenge-bar-fill" style="width:<?= $challenge_pct; ?>%;"></div>
-            </div>
-
-            <div style="display:flex; justify-content:space-between; font-size:.84rem; opacity:.85;">
-              <span><?= $challenge_pct; ?>% Completed</span>
-              <span><?= max(0, $target_count - $completed_count); ?> books to go</span>
-            </div>
+          <div style="margin-bottom:20px;">
+            <h3 style="margin-bottom:6px;">My Digital Bookshelf</h3>
+            <p style="color:#6b6259; font-size:.88rem; margin:0;">Track your reading progress, finished books, and books on your reading list.</p>
           </div>
 
           <!-- Bookshelf Tabs Nav -->
@@ -627,28 +601,6 @@ function showShelf(name, btn) {
   btn.classList.add('active');
   const target = document.getElementById('shelf-' + name);
   if (target) target.style.display = 'block';
-}
-
-async function promptSetGoal(curr) {
-  const target = prompt('Set your 2026 Reading Challenge goal (number of books):', curr || 12);
-  if (!target || isNaN(target) || parseInt(target) <= 0) return;
-
-  const fd = new FormData();
-  fd.append('action', 'set_target');
-  fd.append('target', parseInt(target));
-  fd.append('year', 2026);
-
-  try {
-    const res = await fetch('ajax/bookshelf.php', { method: 'POST', body: fd });
-    const data = await res.json();
-    if (data.ok) {
-      location.href = 'profile.php?tab=reading';
-    } else {
-      alert(data.message || 'Could not update goal.');
-    }
-  } catch(e) {
-    alert('Network error.');
-  }
 }
 
 async function setShelfStatus(bookId, status) {

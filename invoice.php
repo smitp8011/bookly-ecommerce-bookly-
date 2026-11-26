@@ -55,11 +55,6 @@ require_once 'includes/header.php';
       <i class="fas fa-arrow-left"></i> Back to Orders
     </a>
     <div style="display:flex; gap:8px;">
-      <?php if (!empty($order['is_gift'])): ?>
-        <button type="button" onclick="toggleGiftSlip()" id="gift-slip-toggle-btn" class="btn btn-outline btn-sm" style="color:var(--wine); border-color:var(--wine);">
-          <i class="fas fa-gift"></i> <span id="gift-slip-text">Gift Slip Mode (Hide Prices)</span>
-        </button>
-      <?php endif; ?>
       <button type="button" onclick="window.print()" class="btn btn-primary btn-sm">
         <i class="fas fa-print"></i> Print / Save as PDF
       </button>
@@ -87,29 +82,8 @@ require_once 'includes/header.php';
         <div class="inv-no"><?= h($inv_number); ?></div>
         <p><strong>Order Date:</strong> <?= date('d M Y, h:i A', strtotime($order['placed_on'])); ?></p>
         <p><strong>Status:</strong> <span class="status-pill status-<?= $order['status']; ?>"><?= ucfirst($order['status']); ?></span></p>
-        <?php if (!empty($order['is_gift'])): ?>
-          <p style="margin-top:6px;"><span class="gift-badge"><i class="fas fa-gift"></i> Luxury Gift Order</span></p>
-        <?php endif; ?>
       </div>
     </div>
-
-    <?php if (!empty($order['is_gift'])): ?>
-      <div class="gift-note-card" style="margin-bottom:24px;">
-        <div style="display:flex; justify-content:space-between; margin-bottom:6px; font-size:.85rem;">
-          <span><strong>To:</strong> <?= h($order['gift_recipient'] ?: $order['full_name']); ?></span>
-          <?php if (!empty($order['gift_sender'])): ?>
-            <span><strong>From:</strong> <?= h($order['gift_sender']); ?></span>
-          <?php endif; ?>
-        </div>
-        <?php if (!empty($order['gift_message'])): ?>
-          <p style="font-style:italic; color:#4a443d; font-size:.95rem; line-height:1.6; margin:0;">
-            "<?= nl2br(h($order['gift_message'])); ?>"
-          </p>
-        <?php else: ?>
-          <p style="font-style:italic; color:#777; font-size:.88rem; margin:0;">Specially wrapped with warm regards and compliments.</p>
-        <?php endif; ?>
-      </div>
-    <?php endif; ?>
 
     <div class="invoice-details-grid">
       <div class="invoice-block">
@@ -188,12 +162,6 @@ require_once 'includes/header.php';
             <span>−<?= price($discount); ?></span>
           </div>
         <?php endif; ?>
-        <?php if (!empty($order['is_gift'])): ?>
-          <div class="invoice-total-row" style="color:var(--gold); font-weight:600;">
-            <span>🎁 Luxury Gift Wrap & Card</span>
-            <span>+<?= price($order['gift_price']); ?></span>
-          </div>
-        <?php endif; ?>
         <div class="invoice-total-row">
           <span>Delivery / Shipping</span>
           <span style="color:var(--sage); font-weight:600;">FREE</span>
@@ -206,25 +174,5 @@ require_once 'includes/header.php';
     </div>
   </div>
 </div>
-
-<script>
-let giftSlipMode = false;
-function toggleGiftSlip() {
-  giftSlipMode = !giftSlipMode;
-  const cols = document.querySelectorAll('.price-col');
-  const totals = document.querySelector('.invoice-totals');
-  const txt = document.getElementById('gift-slip-text');
-
-  cols.forEach(el => {
-    el.style.display = giftSlipMode ? 'none' : '';
-  });
-  if (totals) {
-    totals.style.display = giftSlipMode ? 'none' : '';
-  }
-  if (txt) {
-    txt.textContent = giftSlipMode ? 'Show Full Tax Invoice' : 'Gift Slip Mode (Hide Prices)';
-  }
-}
-</script>
 
 <?php require_once 'includes/footer.php'; ?>

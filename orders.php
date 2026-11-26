@@ -248,9 +248,6 @@ require_once 'includes/header.php';
           <div>
             <strong style="font-size:1.05rem;">Order #<?= $order['id']; ?></strong>
             <span class="stock-badge" style="margin-left:10px;"><i class="fas fa-calendar-day"></i> <?= date('d M Y, h:i A', strtotime($order['placed_on'])); ?></span>
-            <?php if (!empty($order['is_gift'])): ?>
-              <span class="gift-badge" style="margin-left:8px;"><i class="fas fa-gift"></i> Gift Order</span>
-            <?php endif; ?>
             <?php if ($is_rep_eligible): ?>
               <span style="font-size:.74rem; color:#15803d; background:#f0fdf4; border:1px solid #bbf7d0; padding:2px 8px; border-radius:999px; font-weight:600; margin-left:8px;">
                 <i class="fas fa-rotate"></i> 7-Day Replacement Active (<?= $days_left; ?> days left)
@@ -259,12 +256,6 @@ require_once 'includes/header.php';
           </div>
           <span class="status-pill status-<?= $order['status']; ?>"><?= ucfirst(str_replace('_', ' ', $order['status'])); ?></span>
         </div>
-
-        <?php if (!empty($order['is_gift']) && !empty($order['gift_message'])): ?>
-          <div style="background:#faf5eb; border:1px dashed var(--gold); border-radius:8px; padding:8px 12px; font-size:.82rem; margin:6px 0; color:#5c544b;">
-            <i class="fas fa-gift" style="color:var(--wine);"></i> <strong>Gift Note (To: <?= h($order['gift_recipient'] ?: 'Recipient'); ?>):</strong> <em>"<?= h($order['gift_message']); ?>"</em>
-          </div>
-        <?php endif; ?>
 
         <!-- Visual Stepper Progress Bar -->
         <?= render_order_stepper($order); ?>
