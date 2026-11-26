@@ -6,7 +6,8 @@ require_admin();
 if (isset($_GET['delete'])) {
     if (csrf_check($_GET['csrf'] ?? '')) {
         $id = (int) $_GET['delete'];
-        if ($id !== (int) $_SESSION['user_id']) {
+        $current_admin_id = (int) ($_SESSION['admin_id'] ?? $_SESSION['user_id'] ?? 0);
+        if ($id !== $current_admin_id) {
             $pdo->prepare("DELETE FROM users WHERE id = ? AND role = 'user'")->execute([$id]);
             flash('success', 'User removed.');
         } else {
