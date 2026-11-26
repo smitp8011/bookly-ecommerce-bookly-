@@ -2,7 +2,7 @@
 /**
  * Run this ONCE after importing schema.sql to create your first admin
  * account, then DELETE this file. Visit it in the browser, e.g.
- * http://localhost/bookly/create_admin.php
+ * http://localhost/v3major1/create_admin.php
  */
 require_once 'config.php';
 

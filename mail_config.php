@@ -14,4 +14,4 @@ define('MAIL_HOST', 'smtp.gmail.com');
 define('MAIL_PORT', 587);
 define('MAIL_USERNAME', 'smartysmitu23@gmail.com');   // the Gmail address you generated the app password for
 define('MAIL_PASSWORD', 'fvcn ehrn qqnd gdaq');             // your 16-character Gmail app password
-define('MAIL_FROM_NAME', 'Bookly');
+define('MAIL_FROM_NAME', 'BookNest');

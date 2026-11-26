@@ -34,7 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 $active_page = 'contact';
-$page_title = 'Contact Us — Bookly';
+$page_title = 'Contact Us — BookNest';
 require_once 'includes/header.php';
 ?>
 
@@ -306,7 +306,7 @@ require_once 'includes/header.php';
           <span style="font-size: 1.05rem;">🏛️</span> <span>Flagship Boutique:</span>
         </div>
         <div style="font-size: .84rem; color: #e3dcce; margin-top: 2px; padding-left: 24px;">
-          Bookly Manor, Kala Ghoda, Fort, Mumbai — 400001
+          BookNest House, Kala Ghoda, Fort, Mumbai — 400001
         </div>
         <div style="font-size: .78rem; color: var(--gold-soft); margin-top: 3px; padding-left: 24px; display: flex; align-items: center; gap: 5px;">
           <i class="far fa-clock"></i> <span>Mon–Sat: 9:30 AM – 8:30 PM | Sun: 11 AM – 7 PM</span>
@@ -340,7 +340,7 @@ require_once 'includes/header.php';
         </div>
         <div>
           <div style="font-size: .78rem; font-weight: 700; color: var(--gold); text-transform: uppercase;">✉️ Concierge</div>
-          <a href="mailto:concierge@bookly.in" style="color: var(--gold-soft); font-size: .84rem; font-weight: 600; display: block; margin-top: 2px;">concierge@bookly.in</a>
+          <a href="mailto:concierge@booknest.in" style="color: var(--gold-soft); font-size: .84rem; font-weight: 600; display: block; margin-top: 2px;">concierge@booknest.in</a>
         </div>
       </div>
 

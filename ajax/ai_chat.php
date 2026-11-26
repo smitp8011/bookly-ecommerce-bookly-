@@ -113,7 +113,7 @@ if (!empty(GEMINI_API_KEY) && GEMINI_API_KEY !== 'YOUR_GEMINI_API_KEY_HERE') {
             $coupons_summary[] = "Code: '{$cp['code']}' ({$val}, Min Order: " . price($cp['min_order_value']) . ")";
         }
 
-        $system_instruction = "You are 'Bookly AI', a friendly, warm, witty, and exceptionally knowledgeable bookstore assistant and reading concierge for 'Bookly' (an online bookshop for physical books).\n\n" .
+        $system_instruction = "You are 'BookNest AI', a friendly, warm, witty, and exceptionally knowledgeable bookstore assistant and reading concierge for 'BookNest' (an online book ordering and delivery platform for physical books).\n\n" .
                                "STORE INVENTORY CATALOG:\n" . implode("\n", $catalog_summary) . "\n\n" .
                                "ACTIVE COUPONS:\n" . (empty($coupons_summary) ? "No active coupons." : implode(", ", $coupons_summary)) . "\n\n" .
                                "STORE POLICIES:\n" .
@@ -220,7 +220,7 @@ if (!empty(GROK_API_KEY)) {
         $payload = [
             'model' => 'grok-beta',
             'messages' => [
-                ['role' => 'system', 'content' => "You are Bookly AI, a witty and literary bookstore assistant for Bookly. Help readers discover great books."],
+                ['role' => 'system', 'content' => "You are BookNest AI, a witty and literary bookstore assistant for BookNest. Help readers discover great books."],
                 ['role' => 'user', 'content' => $message]
             ],
             'max_tokens' => 200
@@ -260,7 +260,7 @@ if (!empty(GROK_API_KEY)) {
 if (empty($reply_text)) {
     if (preg_match('/(?:coupon|discount|promo|code|offer|deal|save|saving|chhut|off)/i', $lower)) {
         if (!empty($active_coupons)) {
-            $reply_text = "Here are the active discount codes available right now at **Bookly**! 🎉\n\n";
+            $reply_text = "Here are the active discount codes available right now at **BookNest**! 🎉\n\n";
             foreach ($active_coupons as $cp) {
                 $val = $cp['discount_type'] === 'percent' ? (float)$cp['discount_value'] . '% OFF' : price($cp['discount_value']) . ' OFF';
                 $reply_text .= "• **`{$cp['code']}`** — **{$val}** (Min spend: " . price($cp['min_order_value']) . ")\n";
@@ -270,7 +270,7 @@ if (empty($reply_text)) {
             $reply_text = "We don't have any active public coupon codes right now, but all orders above **₹499** automatically qualify for **FREE Express Delivery**! 🚚";
         }
     } else {
-        $reply_text = "👋 Hello! I'm **Bookly AI**, your reading concierge. I'm here to help you explore our library, read free sample chapters, track orders, and discover great stories!\n\n" .
+        $reply_text = "👋 Hello! I'm **BookNest AI**, your reading concierge. I'm here to help you explore our library, read free sample chapters, track orders, and discover great stories!\n\n" .
                       "How can I help you in your reading journey today?";
         
         $matched_cards = array_map(fn($b) => [

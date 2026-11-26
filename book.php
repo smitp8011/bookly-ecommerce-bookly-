@@ -34,7 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_review'])) {
     } else {
         $purchased_book_ids = get_purchased_book_ids($pdo, $user_id);
         if (!in_array($book_id, $purchased_book_ids)) {
-            flash('error', 'Only verified buyers who purchased this book from Bookly can leave a review.');
+            flash('error', 'Only verified buyers who purchased this book from BookNest can leave a review.');
             redirect('book.php?id=' . $book_id);
         }
 
@@ -346,7 +346,7 @@ require_once 'includes/header.php';
         <div style="margin-bottom:30px; background:var(--paper-dim); padding:16px 20px; border-radius:10px; display:flex; align-items:center; justify-content:space-between; gap:12px;">
           <div>
             <span style="font-weight:600; font-size:.9rem; color:var(--ink); display:block;">Have you read this book?</span>
-            <span style="font-size:.82rem; color:var(--muted);">Log in with your Bookly account to share a verified reader review.</span>
+            <span style="font-size:.82rem; color:var(--muted);">Log in with your BookNest account to share a verified reader review.</span>
           </div>
           <a href="login.php" class="btn btn-outline btn-sm">Log in to Review</a>
         </div>
@@ -358,7 +358,7 @@ require_once 'includes/header.php';
             </div>
             <div>
               <h5 style="margin:0 0 2px 0; font-size:.92rem; color:var(--ink);">Verified Purchases Only</h5>
-              <p style="margin:0; font-size:.82rem; color:var(--muted);">To prevent fake reviews, only verified readers who purchased this book from Bookly can write a review.</p>
+              <p style="margin:0; font-size:.82rem; color:var(--muted);">To prevent fake reviews, only verified readers who purchased this book from BookNest can write a review.</p>
             </div>
           </div>
           <button class="btn btn-primary btn-sm add-cart-btn" data-book-id="<?= $book['id']; ?>" data-cover="images/<?= h($book['cover_image']); ?>" <?= $book['stock'] == 0 ? 'disabled' : ''; ?>>

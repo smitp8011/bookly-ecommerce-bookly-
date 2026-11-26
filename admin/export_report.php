@@ -22,7 +22,7 @@ $stmt->execute([$from, $to_inclusive]);
 $orders = $stmt->fetchAll();
 
 header('Content-Type: text/csv; charset=utf-8');
-header('Content-Disposition: attachment; filename="bookly_orders_' . $from . '_to_' . $to . '.csv"');
+header('Content-Disposition: attachment; filename="booknest_orders_' . $from . '_to_' . $to . '.csv"');
 
 $out = fopen('php://output', 'w');
 fputcsv($out, ['Order ID', 'Customer', 'Email', 'Phone', 'Payment Method', 'Coupon', 'Discount', 'Total', 'Status', 'Placed On']);

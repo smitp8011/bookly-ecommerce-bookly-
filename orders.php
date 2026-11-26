@@ -278,7 +278,7 @@ require_once 'includes/header.php';
           </div>
         <?php elseif ($order['replacement_status'] === 'rejected'): ?>
           <div style="background:#fef2f2; color:#991b1b; border:1px solid #fecaca; border-left:4px solid #ef4444; padding:10px 14px; border-radius:8px; font-size:.84rem; margin:8px 0;">
-            <i class="fas fa-circle-xmark" style="margin-right:4px;"></i> <strong>Replacement Request Declined</strong>. For inquiries, email support@bookly.local.
+            <i class="fas fa-circle-xmark" style="margin-right:4px;"></i> <strong>Replacement Request Declined</strong>. For inquiries, email support@booknest.local.
           </div>
         <?php endif; ?>
 
@@ -387,7 +387,7 @@ function openReplacementModal(id, itemsText) {
 
   if (orderIdInput) orderIdInput.value = id;
   if (orderDisplay) orderDisplay.textContent = '#' + id;
-  if (itemsDisplay) itemsDisplay.textContent = itemsText || 'Bookly Curated Reads';
+  if (itemsDisplay) itemsDisplay.textContent = itemsText || 'BookNest Curated Reads';
   if (modal) {
     modal.style.display = 'flex';
     modal.classList.add('show');

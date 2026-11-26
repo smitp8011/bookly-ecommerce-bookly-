@@ -74,7 +74,7 @@ function email_wrapper(string $title, string $body_html): string {
               <tr>
                 <td style="background-color:#1c1815; padding:18px 24px; color:#e3cb8a; font-size:22px; font-weight:bold; letter-spacing:1px; border-bottom:2px solid #e5c158;">
                   <span style="display:inline-block; vertical-align:middle; width:28px; height:28px; background:#6e1f2a; border-radius:6px; text-align:center; line-height:28px; color:#e5c158; font-size:18px; margin-right:8px; font-family:Georgia,serif; font-weight:bold;">B</span>
-                  <span style="vertical-align:middle; color:#e5c158;">BOOKLY</span>
+                  <span style="vertical-align:middle; color:#e5c158;">BOOKNEST</span>
                 </td>
               </tr>
               <tr>
@@ -85,7 +85,7 @@ function email_wrapper(string $title, string $body_html): string {
               </tr>
               <tr>
                 <td style="background-color:#fafafa; padding:16px 24px; text-align:center; color:#888888; font-size:12px; border-top:1px solid #eeeeee;">
-                  &copy; ' . date('Y') . ' Bookly. All rights reserved.<br>
+                  &copy; ' . date('Y') . ' BookNest — Book Ordering and Delivery System. All rights reserved.<br>
                   This is an automated notification, please do not reply directly.
                 </td>
               </tr>
@@ -101,7 +101,7 @@ function email_wrapper(string $title, string $body_html): string {
 function send_otp_email(string $to_email, string $to_name, string $otp): bool {
     $body = '
       <p>Hi ' . htmlspecialchars($to_name) . ',</p>
-      <p>Use the code below to reset your Bookly password. It expires in <strong>10 minutes</strong>.</p>
+      <p>Use the code below to reset your BookNest password. It expires in <strong>10 minutes</strong>.</p>
       <div style="text-align:center; margin:24px 0;">
         <span style="display:inline-block; background-color:#f3ede2; color:#6e1f2a; font-size:28px; font-weight:bold; letter-spacing:6px; padding:12px 24px; border-radius:6px; border:1px dashed #6e1f2a;">
           ' . htmlspecialchars($otp) . '
@@ -109,7 +109,7 @@ function send_otp_email(string $to_email, string $to_name, string $otp): bool {
       </div>
       <p style="color:#666666; font-size:13px;">If you didn\'t request this, you can safely ignore this email.</p>
     ';
-    return send_email($to_email, $to_name, 'Your Bookly password reset code', email_wrapper('Reset your password', $body));
+    return send_email($to_email, $to_name, 'Your BookNest password reset code', email_wrapper('Reset your password', $body));
 }
 
 /** Send an order-status-update email. */
@@ -150,6 +150,6 @@ function send_order_status_email(string $to_email, string $to_name, int $order_i
     ';
     
     // Clean subject line without special dash characters
-    $subject = 'Bookly Order #' . $order_id . ' Status: ' . $label;
+    $subject = 'BookNest Order #' . $order_id . ' Status: ' . $label;
     return send_email($to_email, $to_name, $subject, email_wrapper('Order Status Update', $body));
 }

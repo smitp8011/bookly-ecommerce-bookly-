@@ -137,7 +137,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     '<tr><td style="padding:10px 0; font-weight:bold; border-top:1px solid #e7ddc9;">Total</td><td style="padding:10px 0; text-align:right; font-weight:bold; border-top:1px solid #e7ddc9;">' . price($grand_total) . '</td></tr>
                     </table>
                     <p>We\'ll email you again as soon as your order status changes.</p>';
-                send_email($email, $full_name, 'Bookly order #' . $order_id . ' confirmed', email_wrapper('Order Confirmed', $confirm_body));
+                send_email($email, $full_name, 'BookNest order #' . $order_id . ' confirmed', email_wrapper('Order Confirmed', $confirm_body));
 
                 redirect('order_success.php?id=' . $order_id);
             } catch (Exception $e) {

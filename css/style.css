@@ -1,5 +1,5 @@
 /* =========================================================
-   Bookly — Design System
+   BookNest — Design System
    Palette: ink & aged gold, dark academia bookshop mood
    Display face: Fraunces (characterful serif)
    Body face: Inter
@@ -1521,7 +1521,7 @@ section{ padding:64px 0; }
 .lightbox-caption{ color:#e0d8cc; font-size:.85rem; margin-top:10px; }
 
 /* =========================================================
-   Bookly AI Assistant Floating Chatbot Widget
+   BookNest AI Assistant Floating Chatbot Widget
    ========================================================= */
 .ai-chat-bubble{
   position:fixed; bottom:28px; right:28px; z-index:9995;

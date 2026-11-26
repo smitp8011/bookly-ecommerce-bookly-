@@ -74,9 +74,9 @@ require_once 'includes/header.php';
               <path d="M19.5 21C21 23.5 20.5 27 18 29.5C16.8 30.7 15.5 32 15.5 32" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
             </svg>
           </span>
-          <span>BOOKLY</span>
+          <span>BOOKNEST</span>
         </h2>
-        <p>Independent Bookstore & Curated Reads<br>support@bookly.local · www.bookly.local</p>
+        <p>Book Ordering and Delivery System<br>support@booknest.local · www.booknest.local</p>
       </div>
       <div class="invoice-ref">
         <div class="inv-no"><?= h($inv_number); ?></div>
@@ -147,7 +147,7 @@ require_once 'includes/header.php';
         <h4 style="font-size:.78rem; text-transform:uppercase; color:#888; margin-bottom:6px;">Terms & Notes</h4>
         <p>Thank you for supporting independent literature. Returns and exchanges are accepted within 7 days of delivery for unread books in original condition.</p>
         <div style="margin-top:16px; font-size:.75rem; color:#aaa; font-family:monospace;">
-          DIGITAL RECEIPT · VERIFIED BY BOOKLY TRANSACTION ID #<?= md5($order['id'] . $order['placed_on']); ?>
+          DIGITAL RECEIPT · VERIFIED BY BOOKNEST TRANSACTION ID #<?= md5($order['id'] . $order['placed_on']); ?>
         </div>
       </div>
 

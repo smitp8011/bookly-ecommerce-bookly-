@@ -12,9 +12,9 @@
               <path d="M19.5 21C21 23.5 20.5 27 18 29.5C16.8 30.7 15.5 32 15.5 32" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
             </svg>
           </span>
-          <span class="logo-text">BOOKLY</span>
+          <span class="logo-text">BOOKNEST</span>
         </div>
-        <p style="max-width:32ch;">An independent online bookshop for readers who still like turning real pages.</p>
+        <p style="max-width:32ch;">Book Ordering and Delivery System — curated books for readers who cherish real pages.</p>
       </div>
       <div>
         <h4>Explore</h4>
@@ -35,7 +35,7 @@
         <a href="#"><i class="fab fa-goodreads-g"></i> Goodreads</a>
       </div>
     </div>
-    <div class="footer-bottom">&copy; <?= date('Y'); ?> Bookly. Built as a major project.</div>
+    <div class="footer-bottom">&copy; <?= date('Y'); ?> BookNest — Book Ordering and Delivery System. Built as a major project.</div>
   </div>
 </footer>
 
@@ -141,10 +141,10 @@
 </div>
 
 <!-- Floating AI Chatbot Widget -->
-<div id="ai-chat-bubble" class="ai-chat-bubble" title="Chat with Bookly AI" aria-label="Open AI Book Assistant">
+<div id="ai-chat-bubble" class="ai-chat-bubble" title="Chat with BookNest AI" aria-label="Open AI Book Assistant">
   <div class="ai-bubble-pulse"></div>
   <i class="fas fa-robot"></i>
-  <span class="ai-bubble-label">Bookly AI</span>
+  <span class="ai-bubble-label">BookNest AI</span>
 </div>
 
 <div id="ai-chat-panel" class="ai-chat-panel" aria-hidden="true">
@@ -161,7 +161,7 @@
         <span class="ai-online-dot"></span>
       </div>
       <div>
-        <h4>Bookly AI Assistant</h4>
+        <h4>BookNest AI Assistant</h4>
         <span class="ai-subtitle">Intelligent Reading Concierge</span>
       </div>
     </div>
@@ -183,7 +183,7 @@
     <div class="ai-msg bot">
       <div class="ai-msg-avatar"><i class="fas fa-robot"></i></div>
       <div class="ai-msg-content">
-        <p>👋 Hello! I'm <strong>Bookly AI</strong>, your personal reading concierge.</p>
+        <p>👋 Hello! I'm <strong>BookNest AI</strong>, your personal reading concierge.</p>
         <p>Ask me for book recommendations, sample excerpts, order tracking (e.g. <em>#1</em>), or store deals!</p>
       </div>
     </div>

@@ -3,14 +3,14 @@ require_once 'config.php';
 require_once 'includes/functions.php';
 
 $active_page = 'about';
-$page_title = 'Our Story & Philosophy — Bookly';
+$page_title = 'Our Story & Philosophy — BookNest';
 require_once 'includes/header.php';
 ?>
 
 <!-- 1. Hero Banner with Luxury Editorial Typography -->
 <section style="padding:60px 0 30px; position:relative; overflow:hidden; background:linear-gradient(180deg, rgba(201,162,75,.08) 0%, transparent 100%);">
   <div class="container" style="text-align:center; max-width:860px;">
-    <span class="eyebrow reveal in" style="font-size:.85rem; letter-spacing:.15em;"><i class="fas fa-feather-pointed" style="color:var(--gold);"></i> The Bookly Sanctuary</span>
+    <span class="eyebrow reveal in" style="font-size:.85rem; letter-spacing:.15em;"><i class="fas fa-feather-pointed" style="color:var(--gold);"></i> The BookNest Sanctuary</span>
     <h1 class="reveal in" style="font-size:clamp(2.2rem, 5vw, 3.4rem); font-family:var(--font-display); line-height:1.2; margin:14px 0 18px; color:var(--ink);">
       Where Stories Find Their Solace & Readers Find Their Home.
     </h1>
@@ -49,7 +49,7 @@ require_once 'includes/header.php';
         Built by lifelong bibliophiles, for discerning readers.
       </h2>
       <p style="font-size:1.02rem; line-height:1.75; color:#4a443d; margin-bottom:18px;">
-        Bookly started in late 2021 as a humble, fragrant mahogany shelf of second-hand classics in an old studio loft. We noticed an uncomfortable trend: online bookstores had become cold, sterile commodity warehouses governed by algorithms rather than taste.
+        BookNest started in late 2021 as a humble, fragrant mahogany shelf of second-hand classics in an old studio loft. We noticed an uncomfortable trend: online bookstores had become cold, sterile commodity warehouses governed by algorithms rather than taste.
       </p>
       <p style="font-size:1.02rem; line-height:1.75; color:#4a443d; margin-bottom:24px;">
         We set out to build an antidote — a warm, sensory literary sanctuary where every novel, memoir, philosophy treatise, and art folio is chosen by human hands who have actually turned the pages. We work directly with boutique publishers and independent authors to ensure extraordinary voices reach your nightstand.
@@ -78,13 +78,13 @@ require_once 'includes/header.php';
     <!-- Image with Floating Luxury Badge -->
     <div class="reveal in" style="position:relative;">
       <div style="border-radius:20px; overflow:hidden; box-shadow:0 25px 60px rgba(0,0,0,.15); border:1px solid var(--paper-dim);">
-        <img src="images/about-img.jpg" alt="Bookly Bookshop Atmosphere" style="width:100%; height:460px; object-fit:cover; display:block;">
+        <img src="images/about-img.jpg" alt="BookNest Bookshop Atmosphere" style="width:100%; height:460px; object-fit:cover; display:block;">
       </div>
       
       <!-- Floating Badge -->
       <div style="position:absolute; bottom:-20px; left:-20px; background:#fffdf8; border:2px solid var(--gold); border-radius:14px; padding:18px 22px; box-shadow:0 15px 35px rgba(0,0,0,.12); max-width:260px;">
         <div style="display:flex; align-items:center; gap:8px; font-size:.78rem; font-weight:700; color:var(--gold); text-transform:uppercase; letter-spacing:.08em; margin-bottom:4px;">
-          <i class="fas fa-award"></i> The Bookly Pledge
+          <i class="fas fa-award"></i> The BookNest Pledge
         </div>
         <p style="font-size:.82rem; line-height:1.45; color:#555; margin:0;">
           "If a book does not stir your soul or arrives with a single imperfection, we replace it instantly."
@@ -100,7 +100,7 @@ require_once 'includes/header.php';
     <div class="section-head reveal in" style="text-align:center; max-width:700px; margin:0 auto 48px;">
       <div>
         <span class="eyebrow"><i class="fas fa-gem" style="color:var(--gold);"></i> The Pillars</span>
-        <h2>Why readers choose Bookly</h2>
+        <h2>Why readers choose BookNest</h2>
         <p style="color:#666; font-size:.95rem; margin-top:8px;">Every detail of our bookstore is crafted to elevate your reading journey.</p>
       </div>
     </div>

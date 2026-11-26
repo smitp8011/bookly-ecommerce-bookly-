@@ -1,5 +1,5 @@
 // =====================================================
-// Bookly — front-end interactivity
+// BookNest — front-end interactivity
 // =====================================================
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -426,7 +426,7 @@ function initThemeToggle() {
     });
   };
 
-  const saved = localStorage.getItem('bookly-theme');
+  const saved = localStorage.getItem('booknest-theme') || localStorage.getItem('bookly-theme');
   const isDark = saved === 'dark';
   updateUI(isDark);
 
@@ -436,7 +436,7 @@ function initThemeToggle() {
       const currentDark = document.documentElement.getAttribute('data-theme') === 'dark';
       const nextDark = !currentDark;
       updateUI(nextDark);
-      localStorage.setItem('bookly-theme', nextDark ? 'dark' : 'light');
+      localStorage.setItem('booknest-theme', nextDark ? 'dark' : 'light');
       showToast(nextDark ? '🌙 Obsidian Dark Mode' : '☀️ Warm Paper Mode');
     });
   });
@@ -1239,7 +1239,7 @@ function initPhotoLightbox() {
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && modal.classList.contains('show')) closeLightbox(); });
 }
 
-/* ---------- Bookly AI Assistant Floating Chatbot ---------- */
+/* ---------- BookNest AI Assistant Floating Chatbot ---------- */
 function initAiChat() {
   const bubble = document.getElementById('ai-chat-bubble');
   const panel = document.getElementById('ai-chat-panel');

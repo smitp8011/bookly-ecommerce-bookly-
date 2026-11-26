@@ -123,7 +123,7 @@ require_once 'includes/header.php';
             <a href="login.php?redirect=checkout.php" class="btn btn-primary" style="width:100%; margin-top:16px;">
               <i class="fas fa-lock"></i> Log in to Checkout
             </a>
-            <div style="font-size:.78rem; text-align:center; color:#888; margin-top:8px;">New to Bookly? <a href="register.php?redirect=checkout.php" style="color:var(--wine); font-weight:600;">Register here</a></div>
+            <div style="font-size:.78rem; text-align:center; color:#888; margin-top:8px;">New to BookNest? <a href="register.php?redirect=checkout.php" style="color:var(--wine); font-weight:600;">Register here</a></div>
           <?php endif; ?>
         </div>
       <?php endif; ?>

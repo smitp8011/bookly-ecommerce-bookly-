@@ -12,14 +12,14 @@ $cart_items_count = cart_count($pdo);
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title><?= isset($page_title) ? h($page_title) . ' — Bookly' : 'Bookly — Your Next Great Read'; ?></title>
+<title><?= isset($page_title) ? h($page_title) . ' — BookNest' : 'BookNest — Book Ordering and Delivery System'; ?></title>
 <link rel="icon" type="image/svg+xml" href="images/favicon.svg">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <link rel="stylesheet" href="<?= str_contains($_SERVER['SCRIPT_NAME'], '/admin/') ? '../css/style.css' : 'css/style.css'; ?>">
 <script>
   // Apply saved theme before paint so there's no flash of the wrong theme.
   (function(){
-    var t = localStorage.getItem('bookly-theme');
+    var t = localStorage.getItem('booknest-theme') || localStorage.getItem('bookly-theme');
     if (t === 'dark') document.documentElement.setAttribute('data-theme', 'dark');
   })();
 </script>
@@ -38,7 +38,7 @@ $cart_items_count = cart_count($pdo);
           <path d="M19.5 21C21 23.5 20.5 27 18 29.5C16.8 30.7 15.5 32 15.5 32" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
         </svg>
       </span>
-      <span class="logo-text">BOOKLY</span>
+      <span class="logo-text">BOOKNEST</span>
     </a>
 
     <nav class="navbar">

@@ -54,7 +54,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 // Sync any guest cart items
                 sync_guest_cart_to_db($pdo, $new_id);
 
-                flash('success', 'Account created successfully! Welcome to Bookly.');
+                flash('success', 'Account created successfully! Welcome to BookNest.');
                 redirect($target);
             }
         }
