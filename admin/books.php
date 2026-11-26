@@ -40,19 +40,14 @@ require_once 'includes/admin_header.php';
         <td><?= h($b['title']); ?></td>
         <td><?= h($b['author']); ?></td>
         <td><?= h($b['category_name']); ?></td>
-        <td>
-          <div style="display:flex; align-items:center; gap:4px;">
-            <span style="color:#888; font-size:.85rem;">₹</span>
-            <input type="number" step="0.01" class="admin-inline-input" data-book-id="<?= $b['id']; ?>" data-field="price" value="<?= (float)$b['price']; ?>" style="width:75px; padding:4px 6px; font-size:.85rem; border:1px solid var(--paper-dim); border-radius:4px; text-align:right; font-weight:600;" title="Edit price directly and click away to save">
-          </div>
-        </td>
-        <td>
-          <div style="display:flex; align-items:center; gap:6px;">
-            <input type="number" min="0" class="admin-inline-input <?= $b['stock'] <= 5 ? 'low-stock-input' : ''; ?>" data-book-id="<?= $b['id']; ?>" data-field="stock" value="<?= (int)$b['stock']; ?>" style="width:65px; padding:4px 6px; font-size:.85rem; border:1px solid var(--paper-dim); border-radius:4px; text-align:center; font-weight:600;" title="Edit stock directly and click away to save">
-            <?php if ($b['stock'] <= 5): ?>
-              <span class="status-pill status-cancelled" style="font-size:.65rem; padding:2px 6px;">Low</span>
-            <?php endif; ?>
-          </div>
+        <td style="font-weight:600; white-space:nowrap;"><?= price($b['price']); ?></td>
+        <td style="white-space:nowrap;">
+          <span style="font-weight:600;"><?= (int)$b['stock']; ?></span>
+          <?php if ($b['stock'] == 0): ?>
+            <span class="status-pill status-cancelled" style="font-size:.68rem; padding:2px 6px; margin-left:4px;">Out of stock</span>
+          <?php elseif ($b['stock'] <= 5): ?>
+            <span class="status-pill status-cancelled" style="font-size:.68rem; padding:2px 6px; margin-left:4px;">Low (<?= (int)$b['stock']; ?> left)</span>
+          <?php endif; ?>
         </td>
         <td>
           <a href="book_form.php?id=<?= $b['id']; ?>" class="btn btn-outline btn-sm">Edit</a>
