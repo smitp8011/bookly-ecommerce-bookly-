@@ -18,6 +18,7 @@ if (!$book) {
 try {
     $idx_check = $pdo->query("SHOW INDEX FROM reviews WHERE Key_name = 'one_review_per_user_per_book'")->fetch();
     if ($idx_check) {
+        $pdo->exec("ALTER TABLE reviews ADD INDEX idx_reviews_book_id (book_id)");
         $pdo->exec("ALTER TABLE reviews DROP INDEX one_review_per_user_per_book");
     }
 } catch (Exception $ignored) {}
